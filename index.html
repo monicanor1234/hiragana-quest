@@ -1,9 +1,4 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hiragana Quest</title>
+<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Hiragana Quest</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=Fredoka:wght@500;600;700&family=Mitr:wght@300;400;500;600&display=swap">
 <style>
   :root{
@@ -515,7 +510,7 @@
     </div>
     <div class="topbar-right">
       <div class="stars" id="starDisplay">
-        <svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7L1 9.2l7.1-.6z"></path></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7L1 9.2l7.1-.6z"/></svg>
         <span id="starCount">0</span>
       </div>
       <button type="button" class="pet-btn" id="openPetFarm"><span class="paw">🐾</span> ฟาร์มสัตว์เลี้ยง</button>
@@ -1559,6 +1554,7 @@
     wrapEl.classList.remove("pet-pop");
     void wrapEl.offsetWidth; /* restart animation even if class was already present */
     wrapEl.classList.add("pet-pop");
+    setTimeout(function(){ wrapEl.classList.remove("pet-pop"); }, 600);
   }
 
   function spawnHearts(wrapEl, emoji, count){
@@ -1621,7 +1617,10 @@
         popAvatar(avatarWrap);
         spawnHearts(avatarWrap, "✨", 3);
       });
-      if(wasJustFed) spawnHearts(avatarWrap, "💖", 4);
+      if(wasJustFed){
+        spawnHearts(avatarWrap, "💖", 4);
+        setTimeout(function(){ avatarWrap.classList.remove("pet-pop"); }, 600);
+      }
       grid.appendChild(card);
     });
     var adoptCard = document.createElement("div");
@@ -1849,6 +1848,4 @@
   initDb();
 })();
 </script>
-
-</body>
-</html>
+</body></html>
