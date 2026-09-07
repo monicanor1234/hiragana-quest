@@ -298,6 +298,152 @@
     padding:16px; text-align:center; color:var(--ink); font-size:.92rem;
   }
 
+  /* ---------- topbar pet button ---------- */
+  .topbar-right{ display:flex; align-items:center; gap:8px; }
+  .pet-btn{
+    display:flex; align-items:center; gap:6px; background:var(--surface-2);
+    border:2px solid var(--line); border-radius:999px; padding:8px 14px; cursor:pointer;
+    font-family:'Fredoka',sans-serif; font-weight:600; font-size:1rem; color:var(--ink);
+  }
+  .pet-btn:hover{ border-color:var(--accent); }
+  .pet-btn .paw{ font-size:1.15rem; }
+
+  /* ---------- pet farm ---------- */
+  .pet-account-bar{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    flex-wrap:wrap; margin-bottom:16px; font-size:.85rem; color:var(--ink-soft);
+  }
+  .pet-account-bar strong{ color:var(--ink); }
+  .link-btn{
+    background:none; border:none; color:var(--accent); font-weight:600; cursor:pointer;
+    font-family:'Fredoka',sans-serif; font-size:.85rem; padding:2px 4px;
+  }
+  .link-btn:hover{ text-decoration:underline; }
+
+  .pet-login-card{
+    background:var(--surface-2); border:2px dashed var(--line); border-radius:18px;
+    padding:20px; max-width:360px; margin:0 auto 20px; text-align:center;
+  }
+  .pet-login-card h3{ font-size:1rem; margin-bottom:6px; }
+  .pet-login-card p{ font-size:.82rem; color:var(--ink-soft); margin:0 0 14px; line-height:1.5; }
+  .pet-login-form{ display:flex; flex-direction:column; gap:10px; text-align:left; }
+  .pet-login-form label{ font-size:.78rem; color:var(--ink-soft); font-weight:600; }
+  .pet-login-form input{
+    width:100%; border:2px solid var(--line); border-radius:10px; padding:9px 12px;
+    font-size:1rem; background:var(--surface); color:var(--ink); font-family:'Fredoka',sans-serif;
+    margin-top:4px;
+  }
+  .pet-login-actions{ display:flex; gap:8px; margin-top:6px; flex-wrap:wrap; }
+  .pet-login-actions .primary-btn{ flex:1; padding:10px 14px; font-size:.95rem; }
+  .pet-skip-line{ margin-top:12px; }
+  .pet-login-msg{ font-size:.8rem; margin-top:8px; min-height:1.2em; }
+  .pet-login-msg.bad{ color:var(--bad); }
+  .pet-login-msg.good{ color:var(--good); }
+
+  .pet-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr));
+    gap:14px;
+  }
+  .pet-card{
+    background:var(--surface-2); border:2px solid var(--line); border-radius:18px;
+    padding:14px; display:flex; flex-direction:column; align-items:center; gap:8px;
+    text-align:center;
+  }
+  .pet-avatar-wrap{ position:relative; width:76px; height:76px; display:flex; align-items:center; justify-content:center; }
+  .pet-avatar{ font-size:54px; line-height:1; }
+  .pet-avatar-wrap .outfit-badge{
+    position:absolute; font-size:22px; pointer-events:none;
+  }
+  .pet-avatar-wrap .outfit-hat{ top:-8px; left:50%; transform:translateX(-50%); }
+  .pet-avatar-wrap .outfit-neck{ bottom:2px; left:50%; transform:translateX(-50%); }
+  .pet-avatar-wrap .outfit-face{ top:20px; right:-4px; }
+  .pet-name{ font-weight:600; font-family:'Fredoka',sans-serif; font-size:.95rem; }
+  .pet-mood{ font-size:.75rem; color:var(--ink-soft); }
+  .hunger-bar{
+    width:100%; height:10px; border-radius:999px; background:var(--line);
+    overflow:hidden;
+  }
+  .hunger-fill{ height:100%; border-radius:999px; transition:width .3s ease; }
+  .pet-card-actions{ display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-top:2px; }
+  .pet-mini-btn{
+    background:var(--surface); border:2px solid var(--line); border-radius:999px;
+    padding:6px 12px; font-size:.75rem; font-weight:600; cursor:pointer; color:var(--ink);
+    font-family:'Fredoka',sans-serif;
+  }
+  .pet-mini-btn:hover{ border-color:var(--accent); }
+  .pet-mini-btn:disabled{ opacity:.4; cursor:not-allowed; }
+
+  .adopt-card{
+    background:var(--surface); border:2px dashed var(--line); border-radius:18px;
+    padding:14px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:8px; cursor:pointer; min-height:170px; color:var(--ink-soft);
+  }
+  .adopt-card:hover{ border-color:var(--accent); color:var(--accent); }
+  .adopt-card .plus{ font-size:34px; font-family:'Fredoka',sans-serif; font-weight:700; }
+
+  .empty-pets{
+    text-align:center; padding:24px 12px; color:var(--ink-soft); font-size:.9rem;
+  }
+
+  /* ---------- modal ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(20,30,50,.5); display:flex;
+    align-items:center; justify-content:center; padding:16px; z-index:50;
+  }
+  .modal-overlay[hidden]{ display:none; }
+  .modal-box{
+    background:var(--surface); border-radius:22px; border:2px solid var(--line);
+    padding:20px; max-width:480px; width:100%; max-height:85vh; overflow-y:auto;
+    box-shadow:0 8px 0 var(--shadow-line);
+  }
+  .modal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .modal-head h3{ font-size:1.1rem; }
+  .modal-close{
+    background:var(--surface-2); border:2px solid var(--line); border-radius:999px;
+    width:32px; height:32px; cursor:pointer; font-size:1rem; color:var(--ink-soft); flex:none;
+  }
+  .modal-close:hover{ color:var(--accent); border-color:var(--accent); }
+
+  .shop-tabs{ display:flex; gap:8px; margin-bottom:14px; }
+  .shop-tab{
+    flex:1; background:var(--surface-2); border:2px solid var(--line); border-radius:12px;
+    padding:8px; font-weight:600; font-family:'Fredoka',sans-serif; font-size:.85rem; cursor:pointer;
+    color:var(--ink-soft);
+  }
+  .shop-tab[aria-pressed="true"]{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+
+  .shop-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); gap:10px;
+  }
+  .shop-item{
+    background:var(--surface-2); border:2px solid var(--line); border-radius:14px;
+    padding:12px 8px; display:flex; flex-direction:column; align-items:center; gap:4px;
+    text-align:center;
+  }
+  .shop-item .emoji{ font-size:32px; }
+  .shop-item .name{ font-size:.78rem; font-weight:600; }
+  .shop-item .price{ font-size:.75rem; color:var(--gold); font-weight:700; }
+  .shop-item.owned{ border-color:var(--good); }
+  .shop-item .buy-btn{
+    margin-top:4px; background:var(--accent); color:var(--accent-ink); border:none;
+    border-radius:999px; padding:6px 14px; font-size:.75rem; font-weight:600; cursor:pointer;
+    font-family:'Fredoka',sans-serif; width:100%;
+  }
+  .shop-item .buy-btn:disabled{ opacity:.4; cursor:not-allowed; }
+
+  .species-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(100px,1fr)); gap:10px; margin-bottom:14px;
+  }
+  .species-item{
+    background:var(--surface-2); border:2px solid var(--line); border-radius:14px;
+    padding:12px 6px; display:flex; flex-direction:column; align-items:center; gap:4px;
+    cursor:pointer; text-align:center;
+  }
+  .species-item[aria-pressed="true"]{ border-color:var(--accent); background:var(--good-soft); }
+  .species-item .emoji{ font-size:36px; }
+  .species-item .name{ font-size:.72rem; font-weight:600; }
+  .species-item .price{ font-size:.72rem; color:var(--gold); font-weight:700; }
+
   @media (max-width:520px){
     .kana-tile{ width:140px; height:140px; } .kana-tile .glyph{ font-size:70px; }
     .choices{ grid-template-columns:1fr 1fr; }
@@ -318,9 +464,12 @@
         <span>เล่นสนุก ฝึกจำตัวอักษรฮิรางานะ</span>
       </div>
     </div>
-    <div class="stars" id="starDisplay">
-      <svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7L1 9.2l7.1-.6z"/></svg>
-      <span id="starCount">0</span>
+    <div class="topbar-right">
+      <div class="stars" id="starDisplay">
+        <svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7L1 9.2l7.1-.6z"/></svg>
+        <span id="starCount">0</span>
+      </div>
+      <button type="button" class="pet-btn" id="openPetFarm"><span class="paw">🐾</span> ฟาร์มสัตว์เลี้ยง</button>
     </div>
   </header>
 
@@ -491,6 +640,26 @@
       </div>
     </div>
   </main>
+
+  <!-- ===================== PET FARM ===================== -->
+  <main id="view-pet" class="view game-view" hidden>
+    <button class="back-btn" data-back>← กลับเมนู</button>
+    <div class="game-head">
+      <h2>ฟาร์มสัตว์เลี้ยง<span class="en">Pet Farm</span></h2>
+    </div>
+
+    <div class="pet-account-bar" id="petAccountBar"></div>
+
+    <div id="petLoginArea"></div>
+
+    <div id="petMainArea" hidden>
+      <div class="pet-grid" id="petGrid"></div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" hidden>
+  <div class="modal-box" id="modalBox"></div>
 </div>
 
 <script>
@@ -561,7 +730,10 @@
     script: "hiragana",
     rows: new Set(ROWS.map(function(r){ return r.id; })),
     stars: loadNum("hqStars", 0),
-    bestTime: loadNum("hqBestTime", 0)
+    bestTime: loadNum("hqBestTime", 0),
+    pets: loadJSON("hqPets", []),
+    closet: loadJSON("hqCloset", []),
+    player: { loggedIn:false, name:"", id:null }
   };
 
   function currentSet(){
@@ -582,6 +754,15 @@
   }
   function saveNum(key, val){
     try{ localStorage.setItem(key, String(val)); }catch(e){}
+  }
+  function loadJSON(key, fallback){
+    try{
+      var v = localStorage.getItem(key);
+      return v === null ? fallback : JSON.parse(v);
+    }catch(e){ return fallback; }
+  }
+  function saveJSON(key, val){
+    try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){}
   }
 
   function activeSet(){
@@ -612,8 +793,8 @@
 
   function addStars(n, anchorEl){
     state.stars += n;
-    saveNum("hqStars", state.stars);
     document.getElementById("starCount").textContent = state.stars;
+    persistProfile();
     if(!window.matchMedia || !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
       var el = document.createElement("span");
       el.className = "float-plus";
@@ -1062,9 +1243,456 @@
     addStars(Math.max(1, Math.round(timeGame.score/3)));
   }
 
+  /* ================= PET FARM ================= */
+  var SPECIES = [
+    {id:"puppy", emoji:"🐶", name:"หมาน้อย", price:15},
+    {id:"kitty", emoji:"🐱", name:"แมวเหมียว", price:15},
+    {id:"bunny", emoji:"🐰", name:"กระต่าย", price:20},
+    {id:"panda", emoji:"🐼", name:"แพนด้า", price:25},
+    {id:"hamster", emoji:"🐹", name:"หนูแฮมสเตอร์", price:10},
+    {id:"chick", emoji:"🐤", name:"ลูกเจี๊ยบ", price:10}
+  ];
+  var FOODS = [
+    {id:"kibble", emoji:"🍚", name:"อาหารเม็ด", price:3, restore:30},
+    {id:"meat", emoji:"🍖", name:"เนื้อสัตว์", price:6, restore:60},
+    {id:"treat", emoji:"🍰", name:"ขนมพิเศษ", price:10, restore:100}
+  ];
+  var OUTFITS = [
+    {id:"bow", emoji:"🎀", name:"โบว์", price:8, slot:"neck"},
+    {id:"glasses", emoji:"🕶️", name:"แว่นกันแดด", price:10, slot:"face"},
+    {id:"crown", emoji:"👑", name:"มงกุฎ", price:15, slot:"hat"},
+    {id:"scarf", emoji:"🧣", name:"ผ้าพันคอ", price:8, slot:"neck"},
+    {id:"tophat", emoji:"🎩", name:"หมวกทรงสูง", price:12, slot:"hat"},
+    {id:"flower", emoji:"🌸", name:"ดอกไม้", price:6, slot:"hat"}
+  ];
+
+  function speciesById(id){ for(var i=0;i<SPECIES.length;i++){ if(SPECIES[i].id===id) return SPECIES[i]; } return null; }
+  function outfitById(id){ for(var i=0;i<OUTFITS.length;i++){ if(OUTFITS[i].id===id) return OUTFITS[i]; } return null; }
+
+  var dbHandle = null;
+  var dbReady = false;
+
+  // Player ids must stay ASCII-safe (db path segments), so we hash the
+  // (possibly Thai) display name into a stable a-z0-9 string rather than
+  // using the raw characters in the path. The real name is stored inside
+  // the document body instead, where any Unicode is fine.
+  function hashName(s){
+    var str = String(s || "").trim();
+    var h = 0;
+    for(var i=0;i<str.length;i++){
+      h = (h * 31 + str.charCodeAt(i)) | 0;
+    }
+    return "p" + Math.abs(h).toString(36);
+  }
+
+  function escapeHtml(s){
+    var d = document.createElement("div");
+    d.textContent = s == null ? "" : String(s);
+    return d.innerHTML;
+  }
+
+  function persistProfile(){
+    saveNum("hqStars", state.stars);
+    saveJSON("hqPets", state.pets);
+    saveJSON("hqCloset", state.closet);
+    if(state.player.loggedIn && dbHandle && state.player.id){
+      dbHandle.doc("players/"+state.player.id).set({
+        name: state.player.name,
+        stars: state.stars,
+        pets: state.pets,
+        closet: state.closet,
+        updatedAt: Date.now()
+      }).catch(function(){});
+    }
+  }
+
+  function initDb(){
+    if(!window.claude || typeof window.claude.use !== "function"){
+      dbHandle = null; dbReady = true;
+      return;
+    }
+    window.claude.use("db").then(function(db){
+      dbHandle = db;
+      dbReady = true;
+      if(!dbHandle){ renderPetArea(); return; }
+      var remembered = null;
+      try{ remembered = localStorage.getItem("hqPlayerId"); }catch(e){}
+      if(remembered){
+        dbHandle.doc("players/"+remembered).get().then(function(snap){
+          if(snap.exists){
+            var d = snap.data();
+            state.player = { loggedIn:true, id: remembered, name: d.name || "" };
+            state.stars = typeof d.stars === "number" ? d.stars : state.stars;
+            state.pets = Array.isArray(d.pets) ? d.pets : state.pets;
+            state.closet = Array.isArray(d.closet) ? d.closet : state.closet;
+            document.getElementById("starCount").textContent = state.stars;
+            saveNum("hqStars", state.stars);
+            saveJSON("hqPets", state.pets);
+            saveJSON("hqCloset", state.closet);
+          }
+          renderPetArea();
+        }).catch(function(){ renderPetArea(); });
+      }else{
+        renderPetArea();
+      }
+    }).catch(function(){ dbHandle = null; dbReady = true; renderPetArea(); });
+  }
+
+  function renderAccountBar(){
+    var bar = document.getElementById("petAccountBar");
+    if(!dbReady || !dbHandle){
+      bar.innerHTML = dbReady ? "<span>เล่นแบบไม่บันทึกออนไลน์ (บันทึกในเครื่องนี้เท่านั้น)</span>" : "";
+      return;
+    }
+    bar.innerHTML = "";
+    if(state.player.loggedIn){
+      var span = document.createElement("span");
+      span.innerHTML = "ผู้เล่น: <strong>"+escapeHtml(state.player.name)+"</strong> · บันทึกออนไลน์แล้ว ";
+      bar.appendChild(span);
+      var btn = document.createElement("button");
+      btn.type = "button"; btn.className = "link-btn"; btn.textContent = "ออกจากระบบ";
+      btn.addEventListener("click", logoutPlayer);
+      bar.appendChild(btn);
+    }else{
+      bar.innerHTML = "<span>ยังไม่ได้เข้าสู่ระบบ — ข้อมูลจะบันทึกในเครื่องนี้เท่านั้น</span>";
+    }
+  }
+
+  function logoutPlayer(){
+    state.player = { loggedIn:false, name:"", id:null };
+    try{ localStorage.removeItem("hqPlayerId"); }catch(e){}
+    renderPetArea();
+  }
+
+  function renderPetArea(){
+    renderAccountBar();
+    var loginArea = document.getElementById("petLoginArea");
+    var mainArea = document.getElementById("petMainArea");
+    if(!dbReady){
+      loginArea.innerHTML = "<p style=\"text-align:center;color:var(--ink-soft);font-size:.85rem;\">กำลังตรวจสอบระบบบันทึกข้อมูล...</p>";
+      loginArea.hidden = false;
+      mainArea.hidden = true;
+      return;
+    }
+    if(dbHandle && !state.player.loggedIn){
+      loginArea.hidden = false;
+      mainArea.hidden = true;
+      renderLoginForm();
+    }else{
+      loginArea.innerHTML = "";
+      loginArea.hidden = true;
+      mainArea.hidden = false;
+      tickAllHunger();
+      renderPetGrid();
+    }
+  }
+
+  function renderLoginForm(){
+    var loginArea = document.getElementById("petLoginArea");
+    loginArea.innerHTML =
+      '<div class="pet-login-card">' +
+        '<h3>เข้าสู่ระบบผู้เล่น</h3>' +
+        '<p>ตั้งชื่อและรหัส 4 หลักของตัวเอง เพื่อบันทึกดาวและสัตว์เลี้ยงไว้เล่นได้ทุกเครื่อง ถ้าเคยตั้งไว้แล้วให้กรอกชื่อ+รหัสเดิมเพื่อเข้าสู่ระบบ</p>' +
+        '<form class="pet-login-form" id="petLoginForm">' +
+          '<label>ชื่อผู้เล่น<input type="text" id="petNameInput" maxlength="20" autocomplete="off" placeholder="เช่น น้องพลอย"></label>' +
+          '<label>รหัส 4 หลัก<input type="text" id="petCodeInput" maxlength="4" inputmode="numeric" autocomplete="off" placeholder="1234"></label>' +
+          '<div class="pet-login-actions">' +
+            '<button type="submit" class="primary-btn">เข้าสู่ระบบ / สร้างโปรไฟล์</button>' +
+          '</div>' +
+        '</form>' +
+        '<p class="pet-login-msg" id="petLoginMsg"></p>' +
+        '<p class="pet-skip-line"><button type="button" class="link-btn" id="petSkipLogin">เล่นแบบไม่บันทึกออนไลน์ ›</button></p>' +
+      '</div>';
+    document.getElementById("petLoginForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      submitLogin();
+    });
+    document.getElementById("petSkipLogin").addEventListener("click", function(){
+      var mainArea = document.getElementById("petMainArea");
+      var la = document.getElementById("petLoginArea");
+      la.hidden = true;
+      mainArea.hidden = false;
+      tickAllHunger();
+      renderPetGrid();
+    });
+  }
+
+  function submitLogin(){
+    var nameVal = document.getElementById("petNameInput").value.trim();
+    var codeVal = document.getElementById("petCodeInput").value.trim();
+    var msg = document.getElementById("petLoginMsg");
+    msg.className = "pet-login-msg";
+    if(!nameVal){
+      msg.textContent = "กรุณาใส่ชื่อผู้เล่น";
+      msg.className = "pet-login-msg bad";
+      return;
+    }
+    if(!/^\d{4}$/.test(codeVal)){
+      msg.textContent = "รหัสต้องเป็นตัวเลข 4 หลัก";
+      msg.className = "pet-login-msg bad";
+      return;
+    }
+    var id = hashName(nameVal) + "_" + codeVal;
+    msg.textContent = "กำลังเข้าสู่ระบบ...";
+    dbHandle.doc("players/"+id).get().then(function(snap){
+      if(snap.exists){
+        var d = snap.data();
+        state.player = { loggedIn:true, id:id, name: d.name || nameVal };
+        state.stars = typeof d.stars === "number" ? d.stars : state.stars;
+        state.pets = Array.isArray(d.pets) ? d.pets : state.pets;
+        state.closet = Array.isArray(d.closet) ? d.closet : state.closet;
+        msg.textContent = "เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับกลับมา";
+        msg.className = "pet-login-msg good";
+      }else{
+        state.player = { loggedIn:true, id:id, name:nameVal };
+        msg.textContent = "สร้างโปรไฟล์ใหม่แล้ว!";
+        msg.className = "pet-login-msg good";
+      }
+      try{ localStorage.setItem("hqPlayerId", id); }catch(e){}
+      document.getElementById("starCount").textContent = state.stars;
+      persistProfile();
+      setTimeout(renderPetArea, 400);
+    }).catch(function(){
+      msg.textContent = "เชื่อมต่อไม่สำเร็จ ลองอีกครั้ง";
+      msg.className = "pet-login-msg bad";
+    });
+  }
+
+  function moodInfo(hunger){
+    if(hunger > 75) return { label:"อิ่มมาก", face:"😋" };
+    if(hunger > 50) return { label:"อิ่ม", face:"🙂" };
+    if(hunger > 25) return { label:"เริ่มหิว", face:"😐" };
+    if(hunger > 0) return { label:"หิวมาก", face:"😟" };
+    return { label:"หิวจัด รีบให้อาหารด่วน!", face:"😢" };
+  }
+
+  function hungerColor(hunger){
+    if(hunger > 50) return "var(--good)";
+    if(hunger > 20) return "var(--gold)";
+    return "var(--bad)";
+  }
+
+  function tickAllHunger(){
+    var now = Date.now();
+    var changed = false;
+    state.pets.forEach(function(pet){
+      var last = pet.lastUpdateAt || now;
+      var elapsedDays = (now - last) / 86400000;
+      if(elapsedDays > 0){
+        var decay = elapsedDays * 40;
+        var newHunger = Math.max(0, Math.min(100, pet.hunger - decay));
+        if(newHunger !== pet.hunger) changed = true;
+        pet.hunger = newHunger;
+        pet.lastUpdateAt = now;
+      }
+    });
+    if(changed) persistProfile();
+  }
+
+  function renderPetGrid(){
+    var grid = document.getElementById("petGrid");
+    grid.innerHTML = "";
+    if(state.pets.length === 0){
+      var empty = document.createElement("div");
+      empty.className = "empty-pets";
+      empty.style.gridColumn = "1/-1";
+      empty.textContent = "ยังไม่มีสัตว์เลี้ยง กดที่การ์ด + ด้านล่างเพื่อรับเลี้ยงตัวแรกกันเลย!";
+      grid.appendChild(empty);
+    }
+    state.pets.forEach(function(pet){
+      var sp = speciesById(pet.species) || SPECIES[0];
+      var mood = moodInfo(pet.hunger);
+      var card = document.createElement("div");
+      card.className = "pet-card";
+      var outfitBadges = "";
+      (pet.outfits || []).forEach(function(oid){
+        var of = outfitById(oid);
+        if(!of) return;
+        var cls = of.slot === "hat" ? "outfit-hat" : (of.slot === "face" ? "outfit-face" : "outfit-neck");
+        outfitBadges += '<span class="outfit-badge '+cls+'">'+of.emoji+'</span>';
+      });
+      card.innerHTML =
+        '<div class="pet-avatar-wrap"><span class="pet-avatar">'+sp.emoji+'</span>'+outfitBadges+'</div>' +
+        '<div class="pet-name">'+escapeHtml(pet.name || sp.name)+'</div>' +
+        '<div class="pet-mood">'+mood.face+' '+mood.label+'</div>' +
+        '<div class="hunger-bar"><div class="hunger-fill" style="width:'+Math.round(pet.hunger)+'%;background:'+hungerColor(pet.hunger)+'"></div></div>' +
+        '<div class="pet-card-actions">' +
+          '<button type="button" class="pet-mini-btn" data-act="feed">🍽️ ให้อาหาร</button>' +
+          '<button type="button" class="pet-mini-btn" data-act="dress">👗 แต่งตัว</button>' +
+        '</div>';
+      card.querySelector('[data-act="feed"]').addEventListener("click", function(){ openFeedModal(pet.id); });
+      card.querySelector('[data-act="dress"]').addEventListener("click", function(){ openDressModal(pet.id); });
+      grid.appendChild(card);
+    });
+    var adoptCard = document.createElement("div");
+    adoptCard.className = "adopt-card";
+    adoptCard.innerHTML = '<div class="plus">+</div><div>รับเลี้ยงสัตว์ตัวใหม่</div>';
+    adoptCard.addEventListener("click", openAdoptModal);
+    grid.appendChild(adoptCard);
+  }
+
+  function openModal(html){
+    document.getElementById("modalBox").innerHTML = html;
+    document.getElementById("modalOverlay").hidden = false;
+  }
+  function closeModal(){
+    document.getElementById("modalOverlay").hidden = true;
+    document.getElementById("modalBox").innerHTML = "";
+  }
+  document.getElementById("modalOverlay").addEventListener("click", function(e){
+    if(e.target.id === "modalOverlay") closeModal();
+  });
+
+  function openAdoptModal(){
+    var chosen = null;
+    var html =
+      '<div class="modal-head"><h3>รับเลี้ยงสัตว์ตัวใหม่</h3><button type="button" class="modal-close" id="mClose">✕</button></div>' +
+      '<div class="species-grid" id="speciesGrid"></div>' +
+      '<label style="font-size:.82rem;color:var(--ink-soft);font-weight:600;">ตั้งชื่อสัตว์เลี้ยง' +
+        '<input type="text" id="petNickInput" maxlength="16" style="width:100%;margin-top:6px;border:2px solid var(--line);border-radius:10px;padding:9px 12px;font-family:\'Fredoka\',sans-serif;background:var(--surface);color:var(--ink);"></label>' +
+      '<div style="margin-top:14px;"><button type="button" class="primary-btn" id="confirmAdopt" style="width:100%;" disabled>รับเลี้ยง</button></div>' +
+      '<p class="pet-login-msg" id="adoptMsg"></p>';
+    openModal(html);
+    document.getElementById("mClose").addEventListener("click", closeModal);
+    var grid = document.getElementById("speciesGrid");
+    SPECIES.forEach(function(sp){
+      var el = document.createElement("div");
+      el.className = "species-item";
+      el.setAttribute("aria-pressed","false");
+      el.innerHTML = '<span class="emoji">'+sp.emoji+'</span><span class="name">'+sp.name+'</span><span class="price">'+sp.price+' ⭐</span>';
+      el.addEventListener("click", function(){
+        grid.querySelectorAll(".species-item").forEach(function(o){ o.setAttribute("aria-pressed","false"); });
+        el.setAttribute("aria-pressed","true");
+        chosen = sp;
+        document.getElementById("confirmAdopt").disabled = false;
+      });
+      grid.appendChild(el);
+    });
+    document.getElementById("confirmAdopt").addEventListener("click", function(){
+      if(!chosen) return;
+      var msg = document.getElementById("adoptMsg");
+      if(state.stars < chosen.price){
+        msg.textContent = "ดาวไม่พอ ต้องการ "+chosen.price+" ⭐";
+        msg.className = "pet-login-msg bad";
+        return;
+      }
+      var nick = document.getElementById("petNickInput").value.trim();
+      state.stars -= chosen.price;
+      state.pets.push({
+        id: "pet_" + Date.now() + "_" + Math.floor(Math.random()*1000),
+        species: chosen.id,
+        name: nick || chosen.name,
+        hunger: 100,
+        outfits: [],
+        lastUpdateAt: Date.now()
+      });
+      document.getElementById("starCount").textContent = state.stars;
+      persistProfile();
+      closeModal();
+      renderPetGrid();
+    });
+  }
+
+  function openFeedModal(petId){
+    var pet = state.pets.filter(function(p){ return p.id === petId; })[0];
+    if(!pet) return;
+    var html =
+      '<div class="modal-head"><h3>ให้อาหาร '+escapeHtml(pet.name)+'</h3><button type="button" class="modal-close" id="mClose">✕</button></div>' +
+      '<div class="shop-grid" id="foodGrid"></div>';
+    openModal(html);
+    document.getElementById("mClose").addEventListener("click", closeModal);
+    var grid = document.getElementById("foodGrid");
+    FOODS.forEach(function(food){
+      var item = document.createElement("div");
+      item.className = "shop-item";
+      item.innerHTML =
+        '<span class="emoji">'+food.emoji+'</span>' +
+        '<span class="name">'+food.name+'</span>' +
+        '<span class="price">'+food.price+' ⭐</span>' +
+        '<button type="button" class="buy-btn">ให้กิน</button>';
+      var btn = item.querySelector(".buy-btn");
+      if(state.stars < food.price) btn.disabled = true;
+      btn.addEventListener("click", function(){
+        if(state.stars < food.price) return;
+        state.stars -= food.price;
+        pet.hunger = Math.max(0, Math.min(100, pet.hunger + food.restore));
+        pet.lastUpdateAt = Date.now();
+        document.getElementById("starCount").textContent = state.stars;
+        persistProfile();
+        closeModal();
+        renderPetGrid();
+      });
+      grid.appendChild(item);
+    });
+  }
+
+  function openDressModal(petId){
+    var pet = state.pets.filter(function(p){ return p.id === petId; })[0];
+    if(!pet) return;
+    if(!pet.outfits) pet.outfits = [];
+    var html =
+      '<div class="modal-head"><h3>แต่งตัว '+escapeHtml(pet.name)+'</h3><button type="button" class="modal-close" id="mClose">✕</button></div>' +
+      '<p style="font-size:.8rem;color:var(--ink-soft);margin:0 0 10px;">ซื้อของแต่งตัว แล้วกดใส่/ถอดให้สัตว์เลี้ยงของคุณ</p>' +
+      '<div class="shop-grid" id="outfitGrid"></div>';
+    openModal(html);
+    document.getElementById("mClose").addEventListener("click", closeModal);
+    renderOutfitGrid(pet);
+  }
+
+  function renderOutfitGrid(pet){
+    var grid = document.getElementById("outfitGrid");
+    grid.innerHTML = "";
+    OUTFITS.forEach(function(of){
+      var owned = state.closet.indexOf(of.id) !== -1;
+      var equipped = pet.outfits.indexOf(of.id) !== -1;
+      var item = document.createElement("div");
+      item.className = "shop-item" + (equipped ? " owned" : "");
+      var btnLabel = !owned ? (of.price+" ⭐ ซื้อ") : (equipped ? "ถอด" : "ใส่");
+      item.innerHTML =
+        '<span class="emoji">'+of.emoji+'</span>' +
+        '<span class="name">'+of.name+'</span>' +
+        (owned ? '' : '<span class="price">'+of.price+' ⭐</span>') +
+        '<button type="button" class="buy-btn">'+btnLabel+'</button>';
+      var btn = item.querySelector(".buy-btn");
+      if(!owned && state.stars < of.price) btn.disabled = true;
+      btn.addEventListener("click", function(){
+        if(!owned){
+          if(state.stars < of.price) return;
+          state.stars -= of.price;
+          state.closet.push(of.id);
+          document.getElementById("starCount").textContent = state.stars;
+        }else if(equipped){
+          pet.outfits = pet.outfits.filter(function(id){ return id !== of.id; });
+        }else{
+          pet.outfits = pet.outfits.filter(function(id){
+            var existing = outfitById(id);
+            return !existing || existing.slot !== of.slot;
+          });
+          pet.outfits.push(of.id);
+        }
+        persistProfile();
+        renderPetGrid();
+        renderOutfitGrid(pet);
+      });
+      grid.appendChild(item);
+    });
+  }
+
+  document.getElementById("openPetFarm").addEventListener("click", function(){
+    showView("view-pet");
+    if(dbReady) renderPetArea();
+    else{
+      document.getElementById("petAccountBar").innerHTML = "";
+      document.getElementById("petLoginArea").innerHTML = "<p style=\"text-align:center;color:var(--ink-soft);font-size:.85rem;\">กำลังตรวจสอบระบบบันทึกข้อมูล...</p>";
+      document.getElementById("petLoginArea").hidden = false;
+      document.getElementById("petMainArea").hidden = true;
+    }
+  });
+
   /* ---------------- init ---------------- */
   document.getElementById("starCount").textContent = state.stars;
   refreshHub();
+  initDb();
 })();
 </script>
 
