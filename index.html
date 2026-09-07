@@ -380,6 +380,8 @@
   }
   .adopt-card:hover{ border-color:var(--accent); color:var(--accent); }
   .adopt-card .plus{ font-size:34px; font-family:'Fredoka',sans-serif; font-weight:700; }
+  .adopt-card.starter-card{ background:var(--gold-soft); border-color:var(--gold); color:var(--gold); border-style:solid; }
+  .adopt-card.starter-card:hover{ border-color:var(--gold); color:var(--gold); transform:translateY(-2px); }
 
   .empty-pets{
     text-align:center; padding:24px 12px; color:var(--ink-soft); font-size:.9rem;
@@ -1250,20 +1252,30 @@
     {id:"bunny", emoji:"🐰", name:"กระต่าย", price:20},
     {id:"panda", emoji:"🐼", name:"แพนด้า", price:25},
     {id:"hamster", emoji:"🐹", name:"หนูแฮมสเตอร์", price:10},
-    {id:"chick", emoji:"🐤", name:"ลูกเจี๊ยบ", price:10}
+    {id:"chick", emoji:"🐤", name:"ลูกเจี๊ยบ", price:10},
+    {id:"penguin", emoji:"🐧", name:"เพนกวิน", price:18}
   ];
   var FOODS = [
     {id:"kibble", emoji:"🍚", name:"อาหารเม็ด", price:3, restore:30},
+    {id:"fruit", emoji:"🍎", name:"ผลไม้", price:4, restore:40},
+    {id:"fish", emoji:"🐟", name:"ปลา", price:5, restore:50},
     {id:"meat", emoji:"🍖", name:"เนื้อสัตว์", price:6, restore:60},
+    {id:"icecream", emoji:"🍦", name:"ไอศกรีม", price:8, restore:80},
     {id:"treat", emoji:"🍰", name:"ขนมพิเศษ", price:10, restore:100}
   ];
   var OUTFITS = [
     {id:"bow", emoji:"🎀", name:"โบว์", price:8, slot:"neck"},
-    {id:"glasses", emoji:"🕶️", name:"แว่นกันแดด", price:10, slot:"face"},
-    {id:"crown", emoji:"👑", name:"มงกุฎ", price:15, slot:"hat"},
+    {id:"bowtie", emoji:"🎗️", name:"โบว์ไท", price:7, slot:"neck"},
     {id:"scarf", emoji:"🧣", name:"ผ้าพันคอ", price:8, slot:"neck"},
+    {id:"necklace", emoji:"📿", name:"สร้อยคอ", price:9, slot:"neck"},
+    {id:"glasses", emoji:"🕶️", name:"แว่นกันแดด", price:10, slot:"face"},
+    {id:"monocle", emoji:"🧐", name:"แว่นเดี่ยว", price:10, slot:"face"},
+    {id:"mask", emoji:"🎭", name:"หน้ากาก", price:11, slot:"face"},
+    {id:"crown", emoji:"👑", name:"มงกุฎ", price:15, slot:"hat"},
     {id:"tophat", emoji:"🎩", name:"หมวกทรงสูง", price:12, slot:"hat"},
-    {id:"flower", emoji:"🌸", name:"ดอกไม้", price:6, slot:"hat"}
+    {id:"flower", emoji:"🌸", name:"ดอกไม้", price:6, slot:"hat"},
+    {id:"beanie", emoji:"🧢", name:"หมวกแก๊ป", price:9, slot:"hat"},
+    {id:"party", emoji:"🥳", name:"หมวกปาร์ตี้", price:8, slot:"hat"}
   ];
 
   function speciesById(id){ for(var i=0;i<SPECIES.length;i++){ if(SPECIES[i].id===id) return SPECIES[i]; } return null; }
@@ -1492,11 +1504,12 @@
   function renderPetGrid(){
     var grid = document.getElementById("petGrid");
     grid.innerHTML = "";
-    if(state.pets.length === 0){
+    var isFirstPet = state.pets.length === 0;
+    if(isFirstPet){
       var empty = document.createElement("div");
       empty.className = "empty-pets";
       empty.style.gridColumn = "1/-1";
-      empty.textContent = "ยังไม่มีสัตว์เลี้ยง กดที่การ์ด + ด้านล่างเพื่อรับเลี้ยงตัวแรกกันเลย!";
+      empty.textContent = "ยังไม่มีสัตว์เลี้ยง เลือกสัตว์เลี้ยงตัวแรกได้ฟรีที่การ์ดด้านล่างเลย!";
       grid.appendChild(empty);
     }
     state.pets.forEach(function(pet){
@@ -1525,9 +1538,15 @@
       grid.appendChild(card);
     });
     var adoptCard = document.createElement("div");
-    adoptCard.className = "adopt-card";
-    adoptCard.innerHTML = '<div class="plus">+</div><div>รับเลี้ยงสัตว์ตัวใหม่</div>';
-    adoptCard.addEventListener("click", openAdoptModal);
+    if(isFirstPet){
+      adoptCard.className = "adopt-card starter-card";
+      adoptCard.innerHTML = '<div class="plus">🎁</div><div>รับสัตว์เลี้ยงตัวแรกฟรี!</div>';
+      adoptCard.addEventListener("click", openStarterModal);
+    }else{
+      adoptCard.className = "adopt-card";
+      adoptCard.innerHTML = '<div class="plus">+</div><div>รับเลี้ยงสัตว์ตัวใหม่</div>';
+      adoptCard.addEventListener("click", openAdoptModal);
+    }
     grid.appendChild(adoptCard);
   }
 
@@ -1587,6 +1606,49 @@
         lastUpdateAt: Date.now()
       });
       document.getElementById("starCount").textContent = state.stars;
+      persistProfile();
+      closeModal();
+      renderPetGrid();
+    });
+  }
+
+  function openStarterModal(){
+    var chosen = null;
+    var html =
+      '<div class="modal-head"><h3>เลือกสัตว์เลี้ยงตัวแรกของคุณ</h3><button type="button" class="modal-close" id="mClose">✕</button></div>' +
+      '<p style="font-size:.8rem;color:var(--ink-soft);margin:0 0 10px;">รับฟรี ไม่เสียดาว! เลือกได้ 1 ตัว</p>' +
+      '<div class="species-grid" id="speciesGrid"></div>' +
+      '<label style="font-size:.82rem;color:var(--ink-soft);font-weight:600;">ตั้งชื่อสัตว์เลี้ยง' +
+        '<input type="text" id="petNickInput" maxlength="16" style="width:100%;margin-top:6px;border:2px solid var(--line);border-radius:10px;padding:9px 12px;font-family:\'Fredoka\',sans-serif;background:var(--surface);color:var(--ink);"></label>' +
+      '<div style="margin-top:14px;"><button type="button" class="primary-btn" id="confirmStarter" style="width:100%;" disabled>รับเลี้ยงฟรี</button></div>' +
+      '<p class="pet-login-msg" id="starterMsg"></p>';
+    openModal(html);
+    document.getElementById("mClose").addEventListener("click", closeModal);
+    var grid = document.getElementById("speciesGrid");
+    SPECIES.forEach(function(sp){
+      var el = document.createElement("div");
+      el.className = "species-item";
+      el.setAttribute("aria-pressed","false");
+      el.innerHTML = '<span class="emoji">'+sp.emoji+'</span><span class="name">'+sp.name+'</span><span class="price" style="color:var(--good);">ฟรี</span>';
+      el.addEventListener("click", function(){
+        grid.querySelectorAll(".species-item").forEach(function(o){ o.setAttribute("aria-pressed","false"); });
+        el.setAttribute("aria-pressed","true");
+        chosen = sp;
+        document.getElementById("confirmStarter").disabled = false;
+      });
+      grid.appendChild(el);
+    });
+    document.getElementById("confirmStarter").addEventListener("click", function(){
+      if(!chosen) return;
+      var nick = document.getElementById("petNickInput").value.trim();
+      state.pets.push({
+        id: "pet_" + Date.now() + "_" + Math.floor(Math.random()*1000),
+        species: chosen.id,
+        name: nick || chosen.name,
+        hunger: 100,
+        outfits: [],
+        lastUpdateAt: Date.now()
+      });
       persistProfile();
       closeModal();
       renderPetGrid();
