@@ -349,14 +349,61 @@
     padding:14px; display:flex; flex-direction:column; align-items:center; gap:8px;
     text-align:center;
   }
-  .pet-avatar-wrap{ position:relative; width:76px; height:76px; display:flex; align-items:center; justify-content:center; }
-  .pet-avatar{ font-size:54px; line-height:1; }
-  .pet-avatar-wrap .outfit-badge{
+  .pet-avatar-wrap{
+    position:relative; width:76px; height:76px; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent;
+  }
+  .pet-rig{
+    position:relative; display:flex; align-items:center; justify-content:center;
+    transform-origin:50% 85%;
+    animation:petBob 2.6s ease-in-out infinite;
+  }
+  .pet-card:nth-of-type(3n+2) .pet-rig{ animation-delay:.5s; }
+  .pet-card:nth-of-type(3n+3) .pet-rig{ animation-delay:1s; }
+  @keyframes petBob{
+    0%,100%{ transform:translateY(0) rotate(0deg) scale(1); }
+    25%{ transform:translateY(-7px) rotate(-4deg) scale(1.02); }
+    50%{ transform:translateY(0) rotate(0deg) scale(1); }
+    75%{ transform:translateY(-3px) rotate(4deg) scale(1.01); }
+  }
+  .pet-avatar-wrap.mood-great .pet-rig{ animation:petBounceHappy 1s ease-in-out infinite; }
+  @keyframes petBounceHappy{
+    0%,100%{ transform:translateY(0) rotate(0deg) scale(1); }
+    30%{ transform:translateY(-12px) rotate(-7deg) scale(1.08); }
+    60%{ transform:translateY(0) rotate(5deg) scale(.97); }
+  }
+  .pet-avatar-wrap.mood-sad .pet-rig{ animation:petDroop 3.2s ease-in-out infinite; }
+  @keyframes petDroop{
+    0%,100%{ transform:translateY(0) rotate(-2deg) scale(1); }
+    50%{ transform:translateY(3px) rotate(2deg) scale(.97); }
+  }
+  .pet-avatar-wrap:active .pet-rig{ transform:scale(.85) !important; animation-play-state:paused; }
+  .pet-avatar-wrap.pet-pop .pet-rig{ animation:petPop .55s ease; }
+  @keyframes petPop{
+    0%{ transform:scale(1) rotate(0deg); }
+    35%{ transform:scale(1.3) rotate(-10deg); }
+    65%{ transform:scale(.92) rotate(8deg); }
+    100%{ transform:scale(1) rotate(0deg); }
+  }
+  .pet-avatar{
+    font-size:54px; line-height:1; display:inline-block;
+    filter:drop-shadow(0 4px 6px rgba(0,0,0,.18));
+  }
+  .pet-heart{
+    position:absolute; top:6px; font-size:15px; opacity:0; pointer-events:none;
+    animation:heartFloat 1.05s ease forwards; z-index:3;
+  }
+  @keyframes heartFloat{
+    0%{ opacity:0; transform:translate(-50%,0) scale(.5); }
+    18%{ opacity:1; transform:translate(-50%,-6px) scale(1.05); }
+    100%{ opacity:0; transform:translate(-50%,-46px) scale(.9); }
+  }
+  .pet-rig .outfit-badge{
     position:absolute; font-size:22px; pointer-events:none;
   }
-  .pet-avatar-wrap .outfit-hat{ top:-8px; left:50%; transform:translateX(-50%); }
-  .pet-avatar-wrap .outfit-neck{ bottom:2px; left:50%; transform:translateX(-50%); }
-  .pet-avatar-wrap .outfit-face{ top:20px; right:-4px; }
+  .pet-rig .outfit-hat{ top:-8px; left:50%; transform:translateX(-50%); }
+  .pet-rig .outfit-neck{ bottom:2px; left:50%; transform:translateX(-50%); }
+  .pet-rig .outfit-face{ top:20px; right:-4px; }
   .pet-name{ font-weight:600; font-family:'Fredoka',sans-serif; font-size:.95rem; }
   .pet-mood{ font-size:.75rem; color:var(--ink-soft); }
   .hunger-bar{
@@ -468,7 +515,7 @@
     </div>
     <div class="topbar-right">
       <div class="stars" id="starDisplay">
-        <svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7L1 9.2l7.1-.6z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7L1 9.2l7.1-.6z"></path></svg>
         <span id="starCount">0</span>
       </div>
       <button type="button" class="pet-btn" id="openPetFarm"><span class="paw">🐾</span> ฟาร์มสัตว์เลี้ยง</button>
@@ -1283,6 +1330,7 @@
 
   var dbHandle = null;
   var dbReady = false;
+  var lastFedPetId = null;
 
   // Player ids must stay ASCII-safe (db path segments), so we hash the
   // (possibly Thai) display name into a stable a-z0-9 string rather than
@@ -1501,6 +1549,34 @@
     if(changed) persistProfile();
   }
 
+  function moodAnimClass(hunger){
+    if(hunger > 70) return "mood-great";
+    if(hunger <= 25) return "mood-sad";
+    return "";
+  }
+
+  function popAvatar(wrapEl){
+    wrapEl.classList.remove("pet-pop");
+    void wrapEl.offsetWidth; /* restart animation even if class was already present */
+    wrapEl.classList.add("pet-pop");
+  }
+
+  function spawnHearts(wrapEl, emoji, count){
+    count = count || 3;
+    for(var i=0;i<count;i++){
+      (function(i){
+        var h = document.createElement("span");
+        h.className = "pet-heart";
+        h.textContent = emoji;
+        var offset = Math.round((i - (count-1)/2) * 16);
+        h.style.left = "calc(50% + " + offset + "px)";
+        h.style.animationDelay = (i*70)+"ms";
+        wrapEl.appendChild(h);
+        setTimeout(function(){ if(h.parentNode) h.parentNode.removeChild(h); }, 1300 + i*70);
+      })(i);
+    }
+  }
+
   function renderPetGrid(){
     var grid = document.getElementById("petGrid");
     grid.innerHTML = "";
@@ -1512,9 +1588,13 @@
       empty.textContent = "ยังไม่มีสัตว์เลี้ยง เลือกสัตว์เลี้ยงตัวแรกได้ฟรีที่การ์ดด้านล่างเลย!";
       grid.appendChild(empty);
     }
+    var justFedId = lastFedPetId;
+    lastFedPetId = null;
     state.pets.forEach(function(pet){
       var sp = speciesById(pet.species) || SPECIES[0];
       var mood = moodInfo(pet.hunger);
+      var moodClass = moodAnimClass(pet.hunger);
+      var wasJustFed = (pet.id === justFedId);
       var card = document.createElement("div");
       card.className = "pet-card";
       var outfitBadges = "";
@@ -1524,8 +1604,9 @@
         var cls = of.slot === "hat" ? "outfit-hat" : (of.slot === "face" ? "outfit-face" : "outfit-neck");
         outfitBadges += '<span class="outfit-badge '+cls+'">'+of.emoji+'</span>';
       });
+      var wrapClasses = "pet-avatar-wrap" + (moodClass ? " "+moodClass : "") + (wasJustFed ? " pet-pop" : "");
       card.innerHTML =
-        '<div class="pet-avatar-wrap"><span class="pet-avatar">'+sp.emoji+'</span>'+outfitBadges+'</div>' +
+        '<div class="'+wrapClasses+'"><div class="pet-rig"><span class="pet-avatar">'+sp.emoji+'</span>'+outfitBadges+'</div></div>' +
         '<div class="pet-name">'+escapeHtml(pet.name || sp.name)+'</div>' +
         '<div class="pet-mood">'+mood.face+' '+mood.label+'</div>' +
         '<div class="hunger-bar"><div class="hunger-fill" style="width:'+Math.round(pet.hunger)+'%;background:'+hungerColor(pet.hunger)+'"></div></div>' +
@@ -1535,6 +1616,12 @@
         '</div>';
       card.querySelector('[data-act="feed"]').addEventListener("click", function(){ openFeedModal(pet.id); });
       card.querySelector('[data-act="dress"]').addEventListener("click", function(){ openDressModal(pet.id); });
+      var avatarWrap = card.querySelector(".pet-avatar-wrap");
+      avatarWrap.addEventListener("click", function(){
+        popAvatar(avatarWrap);
+        spawnHearts(avatarWrap, "✨", 3);
+      });
+      if(wasJustFed) spawnHearts(avatarWrap, "💖", 4);
       grid.appendChild(card);
     });
     var adoptCard = document.createElement("div");
@@ -1597,17 +1684,19 @@
       }
       var nick = document.getElementById("petNickInput").value.trim();
       state.stars -= chosen.price;
-      state.pets.push({
+      var newPet = {
         id: "pet_" + Date.now() + "_" + Math.floor(Math.random()*1000),
         species: chosen.id,
         name: nick || chosen.name,
         hunger: 100,
         outfits: [],
         lastUpdateAt: Date.now()
-      });
+      };
+      state.pets.push(newPet);
       document.getElementById("starCount").textContent = state.stars;
       persistProfile();
       closeModal();
+      lastFedPetId = newPet.id;
       renderPetGrid();
     });
   }
@@ -1641,16 +1730,18 @@
     document.getElementById("confirmStarter").addEventListener("click", function(){
       if(!chosen) return;
       var nick = document.getElementById("petNickInput").value.trim();
-      state.pets.push({
+      var newPet = {
         id: "pet_" + Date.now() + "_" + Math.floor(Math.random()*1000),
         species: chosen.id,
         name: nick || chosen.name,
         hunger: 100,
         outfits: [],
         lastUpdateAt: Date.now()
-      });
+      };
+      state.pets.push(newPet);
       persistProfile();
       closeModal();
+      lastFedPetId = newPet.id;
       renderPetGrid();
     });
   }
@@ -1682,6 +1773,7 @@
         document.getElementById("starCount").textContent = state.stars;
         persistProfile();
         closeModal();
+        lastFedPetId = pet.id;
         renderPetGrid();
       });
       grid.appendChild(item);
