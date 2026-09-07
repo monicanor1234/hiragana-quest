@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hiragana Quest</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=Fredoka:wght@500;600;700&family=Mitr:wght@300;400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#EAF6FF;
+    --bg-alt:#DCEFFF;
+    --surface:#FFFFFF;
+    --surface-2:#F3FAFF;
+    --ink:#24344D;
+    --ink-soft:#5C6E8F;
+    --line:#C9E2F5;
+    --accent:#E3502A;
+    --accent-ink:#FFF6F1;
+    --good:#3E9A6E;
+    --good-soft:#DFF3E7;
+    --bad:#D64550;
+    --gold:#E8A400;
+    --gold-soft:#FFF1CE;
+    --shadow-line:#B9D8F0;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0E1930;
+      --bg-alt:#132244;
+      --surface:#182A4C;
+      --surface-2:#142440;
+      --ink:#EBF1FC;
+      --ink-soft:#9FB4DA;
+      --line:#2C4270;
+      --accent:#FF7A56;
+      --accent-ink:#241008;
+      --good:#6FCB9B;
+      --good-soft:#173327;
+      --bad:#FF8792;
+      --gold:#FFD666;
+      --gold-soft:#3A2E10;
+      --shadow-line:#0A1526;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0E1930;
+    --bg-alt:#132244;
+    --surface:#182A4C;
+    --surface-2:#142440;
+    --ink:#EBF1FC;
+    --ink-soft:#9FB4DA;
+    --line:#2C4270;
+    --accent:#FF7A56;
+    --accent-ink:#241008;
+    --good:#6FCB9B;
+    --good-soft:#173327;
+    --bad:#FF8792;
+    --gold:#FFD666;
+    --gold-soft:#3A2E10;
+    --shadow-line:#0A1526;
+    color-scheme: dark;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:
+      radial-gradient(circle at 1px 1px, var(--line) 1px, transparent 1px) 0 0/28px 28px,
+      var(--bg);
+    color:var(--ink);
+    font-family:'Mitr','Noto Sans Thai',system-ui,sans-serif;
+    min-height:100vh;
+  }
+  h1,h2,h3{ font-family:'Fredoka','Baloo 2',system-ui,sans-serif; text-wrap:balance; margin:0; }
+  .en{ font-family:'Fredoka','Baloo 2',system-ui,sans-serif; font-weight:500; opacity:.7; font-size:.6em; display:block; margin-top:.15em; }
+  button{ font-family:inherit; }
+  :focus-visible{ outline:3px solid var(--accent); outline-offset:2px; border-radius:6px; }
+
+  .app{ max-width:960px; margin:0 auto; padding:18px 18px 56px; }
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:10px 16px; background:var(--surface); border:2px solid var(--line);
+    border-radius:20px; box-shadow:0 4px 0 var(--shadow-line);
+    flex-wrap:wrap;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .brand-mark{
+    width:52px; height:52px; border-radius:14px; background:var(--bg-alt);
+    border:2px solid var(--line); display:flex; align-items:center; justify-content:center;
+    font-family:'Kosugi Maru',sans-serif; font-size:30px; color:var(--accent);
+    flex:none;
+  }
+  .brand-text{ display:flex; flex-direction:column; line-height:1.25; }
+  .brand-text strong{ font-family:'Fredoka','Baloo 2',sans-serif; font-size:1.25rem; font-weight:700; }
+  .brand-text span{ font-size:.8rem; color:var(--ink-soft); }
+  .stars{
+    display:flex; align-items:center; gap:8px; padding:8px 14px; border-radius:999px;
+    background:var(--gold-soft); border:2px solid var(--gold); position:relative;
+    font-family:'Fredoka','Baloo 2',sans-serif; font-weight:600; font-size:1.05rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .stars svg{ width:22px; height:22px; fill:var(--gold); flex:none; }
+  .float-plus{
+    position:absolute; right:10px; top:-6px; color:var(--gold); font-weight:700;
+    font-family:'Fredoka',sans-serif; font-size:.85rem; pointer-events:none;
+    animation:floatUp .8s ease forwards;
+  }
+  @keyframes floatUp{ 0%{ opacity:0; transform:translateY(4px);} 25%{opacity:1;} 100%{ opacity:0; transform:translateY(-22px);} }
+
+  /* ---------- layout helpers ---------- */
+  .view{ margin-top:20px; }
+  .back-btn{
+    background:none; border:none; color:var(--ink-soft); font-size:.95rem;
+    cursor:pointer; padding:6px 4px; margin-bottom:6px; display:inline-flex; align-items:center; gap:4px;
+  }
+  .back-btn:hover{ color:var(--accent); }
+
+  /* ---------- hub ---------- */
+  .rows-select{
+    background:var(--surface); border:2px solid var(--line); border-radius:20px;
+    padding:16px 18px; box-shadow:0 4px 0 var(--shadow-line);
+  }
+  .rows-select h2{ font-size:1.05rem; margin-bottom:4px; }
+  .rows-select .hint{ font-size:.82rem; color:var(--ink-soft); margin-bottom:12px; }
+  .chip-group-label{ font-size:.78rem; font-weight:600; color:var(--ink-soft); margin:14px 0 8px; }
+  .chip-group-label:first-of-type{ margin-top:2px; }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{
+    border:2px solid var(--line); background:var(--surface-2); color:var(--ink);
+    border-radius:999px; padding:7px 14px; font-size:.85rem; cursor:pointer;
+    display:flex; align-items:center; gap:6px; transition:transform .12s ease;
+  }
+  .chip .glyph{ font-family:'Kosugi Maru',sans-serif; font-size:1rem; color:var(--accent); }
+  .chip[aria-pressed="true"]{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+  .chip[aria-pressed="true"] .glyph{ color:var(--accent-ink); }
+  .chip:active{ transform:scale(.96); }
+  .rows-count{ margin-top:12px; font-size:.82rem; color:var(--ink-soft); }
+  .rows-count strong{ color:var(--ink); }
+
+  .games-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr));
+    gap:16px; margin-top:18px;
+  }
+  .game-card{
+    background:var(--surface); border:2px solid var(--line); border-radius:20px;
+    padding:18px; display:flex; flex-direction:column; gap:10px;
+    box-shadow:0 4px 0 var(--shadow-line);
+  }
+  .game-card .icon{ width:38px; height:38px; color:var(--accent); }
+  .game-card h3{ font-size:1.08rem; }
+  .game-card p{ margin:0; font-size:.85rem; color:var(--ink-soft); line-height:1.5; flex:1; }
+  .play-btn{
+    align-self:flex-start; background:var(--accent); color:var(--accent-ink); border:none;
+    border-radius:12px; padding:9px 18px; font-weight:600; font-family:'Fredoka',sans-serif;
+    cursor:pointer; box-shadow:0 3px 0 color-mix(in srgb, var(--accent) 65%, black);
+  }
+  .play-btn:active{ transform:translateY(2px); box-shadow:none; }
+  .play-btn:disabled{ opacity:.45; cursor:not-allowed; box-shadow:none; }
+  .card-need{ font-size:.75rem; color:var(--bad); }
+
+  /* ---------- game screens ---------- */
+  .game-view{
+    background:var(--surface); border:2px solid var(--line); border-radius:24px;
+    padding:20px 22px 26px; box-shadow:0 4px 0 var(--shadow-line);
+  }
+  .game-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:14px;}
+  .game-head h2{ font-size:1.3rem; }
+  .round-stats{
+    font-family:'Fredoka',sans-serif; font-weight:600; background:var(--surface-2);
+    border:2px solid var(--line); border-radius:999px; padding:6px 14px; font-size:.85rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .stage{ display:flex; justify-content:center; margin:18px 0 24px; }
+
+  /* genkouyoushi tile */
+  .kana-tile{
+    position:relative; width:170px; height:170px; background:var(--surface-2);
+    border:2px solid var(--line); border-radius:20px; display:flex; align-items:center;
+    justify-content:center; overflow:hidden;
+  }
+  .kana-tile::before,.kana-tile::after{ content:""; position:absolute; background:var(--line); opacity:.6; }
+  .kana-tile::before{ top:0; bottom:0; left:50%; width:1px; }
+  .kana-tile::after{ left:0; right:0; top:50%; height:1px; }
+  .kana-tile .glyph{ position:relative; z-index:1; font-family:'Kosugi Maru',sans-serif; font-size:88px; line-height:1; color:var(--ink); }
+  .kana-tile.small{ width:74px; height:74px; }
+  .kana-tile.small .glyph{ font-size:38px; }
+  .kana-tile.q .glyph{ color:var(--ink-soft); font-family:'Fredoka',sans-serif; font-weight:700; }
+
+  .stamp-svg{ position:absolute; inset:0; width:100%; height:100%; z-index:2; opacity:0; }
+  .stamp-svg.show{ animation:stampDown .35s ease forwards; }
+  @keyframes stampDown{ 0%{ opacity:0; transform:scale(1.6) rotate(8deg);} 55%{opacity:1;} 100%{ opacity:1; transform:scale(1) rotate(-5deg);} }
+  .stamp-svg .draw{ stroke-dasharray:100; stroke-dashoffset:100; animation:drawStamp .45s ease forwards; }
+  .stamp-svg .draw2{ animation-delay:.28s; }
+  @keyframes drawStamp{ to{ stroke-dashoffset:0; } }
+
+  .sequence{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .seq-arrow{ color:var(--ink-soft); font-size:1.3rem; }
+
+  .choices{
+    display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; max-width:420px; margin:0 auto;
+  }
+  .choice-btn{
+    background:var(--surface-2); border:2px solid var(--line); border-radius:16px;
+    padding:14px; font-size:1.15rem; font-weight:600; cursor:pointer; color:var(--ink);
+    font-family:'Fredoka',sans-serif;
+  }
+  .choice-btn.kanaopt{ font-family:'Kosugi Maru',sans-serif; font-size:2rem; padding:16px; }
+  .choice-btn:hover{ border-color:var(--accent); }
+  .choice-btn:active{ transform:scale(.97); }
+  .choice-btn.correct{ background:var(--good-soft); border-color:var(--good); }
+  .choice-btn.wrong{ background:color-mix(in srgb, var(--bad) 14%, var(--surface-2)); border-color:var(--bad); }
+  .choice-btn:disabled{ cursor:default; }
+
+  .type-row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; max-width:420px; margin:0 auto; }
+  .type-input{
+    flex:1; min-width:160px; border:2px solid var(--line); border-radius:12px; padding:12px 14px;
+    font-size:1.1rem; background:var(--surface-2); color:var(--ink); font-family:'Fredoka',sans-serif;
+  }
+  .type-input.shake{ animation:shake .3s ease; border-color:var(--bad); }
+  @keyframes shake{ 25%{transform:translateX(-6px);} 75%{transform:translateX(6px);} }
+  .submit-btn{
+    background:var(--accent); color:var(--accent-ink); border:none; border-radius:12px;
+    padding:12px 20px; font-weight:600; font-family:'Fredoka',sans-serif; cursor:pointer;
+  }
+  .feedback-line{ text-align:center; min-height:1.4em; margin-top:12px; font-weight:600; font-family:'Fredoka',sans-serif; }
+  .feedback-line.good{ color:var(--good); }
+  .feedback-line.bad{ color:var(--bad); }
+
+  /* memory match */
+  .match-grid{
+    display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; max-width:480px; margin:0 auto;
+  }
+  .match-card{
+    aspect-ratio:1; border-radius:14px; border:2px solid var(--line); cursor:pointer;
+    background:var(--surface-2); display:flex; align-items:center; justify-content:center;
+    position:relative; perspective:600px;
+  }
+  .match-card .face{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    border-radius:12px; backface-visibility:hidden; transition:transform .35s ease;
+  }
+  .match-card .back{ background:var(--bg-alt); background-image:radial-gradient(circle,var(--line) 1.5px, transparent 1.5px); background-size:10px 10px; transform:rotateY(0deg); }
+  .match-card .front{ background:var(--surface); transform:rotateY(180deg); font-weight:600; padding:4px; text-align:center; }
+  .match-card .front.kana{ font-family:'Kosugi Maru',sans-serif; font-size:1.7rem; }
+  .match-card .front.romaji{ font-family:'Fredoka',sans-serif; font-size:1rem; color:var(--accent); }
+  .match-card.flipped .back{ transform:rotateY(-180deg); }
+  .match-card.flipped .front{ transform:rotateY(0deg); }
+  .match-card.matched{ border-color:var(--good); }
+  .match-card.matched .front{ background:var(--good-soft); }
+  .match-meta{ display:flex; justify-content:center; gap:18px; margin-top:16px; font-size:.85rem; color:var(--ink-soft); font-family:'Fredoka',sans-serif; }
+
+  /* time attack */
+  .timer-wrap{ display:flex; justify-content:center; margin-bottom:6px; }
+  .timer-ring{ width:64px; height:64px; }
+  .timer-ring circle{ fill:none; stroke-width:8; }
+  .timer-ring .track{ stroke:var(--line); }
+  .timer-ring .fill{ stroke:var(--accent); stroke-linecap:round; transform:rotate(-90deg); transform-origin:50% 50%; transition:stroke-dashoffset 1s linear; }
+  .timer-num{ font-family:'Fredoka',sans-serif; font-weight:700; font-size:1.3rem; }
+  .center-col{ display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center; }
+  .result-box{ text-align:center; }
+  .result-box .big-num{ font-family:'Fredoka',sans-serif; font-size:3rem; font-weight:700; color:var(--accent); }
+  .best-line{ color:var(--ink-soft); font-size:.9rem; margin-top:4px; }
+  .primary-btn{
+    background:var(--accent); color:var(--accent-ink); border:none; border-radius:14px;
+    padding:12px 26px; font-weight:600; font-family:'Fredoka',sans-serif; font-size:1.05rem; cursor:pointer;
+    box-shadow:0 3px 0 color-mix(in srgb, var(--accent) 65%, black);
+  }
+  .primary-btn:active{ transform:translateY(2px); box-shadow:none; }
+  .ghost-btn{
+    background:none; border:2px solid var(--line); color:var(--ink); border-radius:14px;
+    padding:10px 22px; font-weight:600; font-family:'Fredoka',sans-serif; cursor:pointer;
+  }
+
+  .warn-box{
+    background:var(--gold-soft); border:2px dashed var(--gold); border-radius:16px;
+    padding:16px; text-align:center; color:var(--ink); font-size:.92rem;
+  }
+
+  @media (max-width:520px){
+    .kana-tile{ width:140px; height:140px; } .kana-tile .glyph{ font-size:70px; }
+    .choices{ grid-template-columns:1fr 1fr; }
+    .match-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001s !important; transition-duration:.001s !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">あ</div>
+      <div class="brand-text">
+        <strong>Hiragana Quest</strong>
+        <span>เล่นสนุก ฝึกจำตัวอักษรฮิรางานะ</span>
+      </div>
+    </div>
+    <div class="stars" id="starDisplay">
+      <svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7L1 9.2l7.1-.6z"/></svg>
+      <span id="starCount">0</span>
+    </div>
+  </header>
+
+  <!-- ===================== HUB ===================== -->
+  <main id="view-hub" class="view">
+    <section class="rows-select">
+      <h2>เลือกวรรคที่จะฝึก</h2>
+      <p class="hint">แตะเพื่อเลือก/ยกเลิกวรรค ใช้ได้กับทุกเกม</p>
+      <p class="chip-group-label">วรรคพื้นฐาน</p>
+      <div class="chips" id="rowChipsBase"></div>
+      <p class="chip-group-label">เสียงเสริม ゛ / ゜ เช่น が ざ だ ば ぱ</p>
+      <div class="chips" id="rowChipsExtra"></div>
+      <p class="rows-count">เลือกแล้ว <strong id="activeCount">0</strong> ตัวอักษร</p>
+    </section>
+
+    <section class="games-grid" id="gamesGrid">
+      <article class="game-card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="10" cy="10" r="7"></circle><text x="10" y="14" font-size="9" fill="currentColor" stroke="none" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="700">?</text><line x1="15.2" y1="15.2" x2="21" y2="21"></line>
+        </svg>
+        <h3>ทายตัวอักษร<span class="en">Guess the Character</span></h3>
+        <p>ดูตัวฮิรางานะ แล้วเลือกคำอ่านภาษาอังกฤษที่ถูกต้องจาก 4 ตัวเลือก</p>
+        <button class="play-btn" data-game="guess">เล่น</button>
+      </article>
+
+      <article class="game-card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="4" cy="12" r="1.6" fill="currentColor" stroke="none"></circle>
+          <circle cx="10" cy="12" r="1.6" fill="currentColor" stroke="none"></circle>
+          <circle cx="16" cy="12" r="1.6" fill="currentColor" stroke="none"></circle>
+          <path d="M19 8l3 4-3 4"></path>
+        </svg>
+        <h3>ตัวต่อไปคืออะไร<span class="en">What's Next?</span></h3>
+        <p>ดูลำดับตัวอักษร 3 ตัว แล้วทายว่าตัวต่อไปในลำดับคือตัวไหน</p>
+        <button class="play-btn" data-game="next">เล่น</button>
+      </article>
+
+      <article class="game-card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="6" width="10" height="14" rx="2" transform="rotate(-8 8 13)"></rect>
+          <rect x="9" y="4" width="10" height="14" rx="2" transform="rotate(8 14 11)"></rect>
+        </svg>
+        <h3>จับคู่บัตรคำ<span class="en">Memory Match</span></h3>
+        <p>พลิกการ์ดหาคู่ระหว่างตัวฮิรางานะกับคำอ่าน ให้ครบทุกคู่</p>
+        <button class="play-btn" data-game="match">เล่น</button>
+      </article>
+
+      <article class="game-card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="6" width="20" height="13" rx="2.5"></rect>
+          <line x1="6" y1="10" x2="6" y2="10.01"></line><line x1="10" y1="10" x2="10" y2="10.01"></line>
+          <line x1="14" y1="10" x2="14" y2="10.01"></line><line x1="18" y1="10" x2="18" y2="10.01"></line>
+          <line x1="7" y1="15" x2="17" y2="15"></line>
+        </svg>
+        <h3>พิมพ์คำอ่าน<span class="en">Type the Reading</span></h3>
+        <p>ดูตัวฮิรางานะ แล้วพิมพ์คำอ่านภาษาอังกฤษให้ถูกต้อง</p>
+        <button class="play-btn" data-game="type">เล่น</button>
+      </article>
+
+      <article class="game-card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l3 2"></path><path d="M9 2h6"></path>
+        </svg>
+        <h3>เกมจับเวลา<span class="en">Time Attack</span></h3>
+        <p>ตอบให้ได้มากที่สุดภายใน 45 วินาที ท้าทายสถิติของตัวเอง</p>
+        <button class="play-btn" data-game="time">เล่น</button>
+      </article>
+    </section>
+  </main>
+
+  <!-- ===================== GUESS ===================== -->
+  <main id="view-guess" class="view game-view" hidden>
+    <button class="back-btn" data-back>← กลับเมนู</button>
+    <div class="game-head">
+      <h2>ทายตัวอักษร<span class="en">Guess the Character</span></h2>
+      <div class="round-stats"><span id="guessScore">0</span> / <span id="guessTotal">0</span> ถูก · streak <span id="guessStreak">0</span></div>
+    </div>
+    <div class="stage">
+      <div class="kana-tile" id="guessTile"><span class="glyph" id="guessChar"></span></div>
+    </div>
+    <div class="choices" id="guessChoices"></div>
+  </main>
+
+  <!-- ===================== NEXT ===================== -->
+  <main id="view-next" class="view game-view" hidden>
+    <button class="back-btn" data-back>← กลับเมนู</button>
+    <div class="game-head">
+      <h2>ตัวต่อไปคืออะไร<span class="en">What's Next?</span></h2>
+      <div class="round-stats"><span id="nextScore">0</span> / <span id="nextTotal">0</span> ถูก · streak <span id="nextStreak">0</span></div>
+    </div>
+    <div class="stage">
+      <div class="sequence" id="nextSequence"></div>
+    </div>
+    <div class="choices" id="nextChoices"></div>
+  </main>
+
+  <!-- ===================== MATCH ===================== -->
+  <main id="view-match" class="view game-view" hidden>
+    <button class="back-btn" data-back>← กลับเมนู</button>
+    <div class="game-head">
+      <h2>จับคู่บัตรคำ<span class="en">Memory Match</span></h2>
+      <div class="round-stats"><span id="matchFound">0</span> / <span id="matchPairs">0</span> คู่</div>
+    </div>
+    <div class="match-grid" id="matchGrid"></div>
+    <p class="match-meta">พลิกไปแล้ว <span id="matchMoves">0</span> ครั้ง</p>
+  </main>
+
+  <!-- ===================== TYPE ===================== -->
+  <main id="view-type" class="view game-view" hidden>
+    <button class="back-btn" data-back>← กลับเมนู</button>
+    <div class="game-head">
+      <h2>พิมพ์คำอ่าน<span class="en">Type the Reading</span></h2>
+      <div class="round-stats"><span id="typeScore">0</span> / <span id="typeTotal">0</span> ถูก · streak <span id="typeStreak">0</span></div>
+    </div>
+    <div class="stage">
+      <div class="kana-tile" id="typeTile"><span class="glyph" id="typeChar"></span></div>
+    </div>
+    <form class="type-row" id="typeForm">
+      <input class="type-input" id="typeInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="พิมพ์คำอ่าน เช่น ka">
+      <button class="submit-btn" type="submit">ตรวจคำตอบ</button>
+    </form>
+    <p class="feedback-line" id="typeFeedback"></p>
+  </main>
+
+  <!-- ===================== TIME ATTACK ===================== -->
+  <main id="view-time" class="view game-view" hidden>
+    <button class="back-btn" data-back>← กลับเมนู</button>
+    <div class="game-head">
+      <h2>เกมจับเวลา<span class="en">Time Attack</span></h2>
+      <div class="round-stats" id="timeBestLine">สถิติ 0</div>
+    </div>
+
+    <div id="timeStart" class="center-col">
+      <p>ตอบให้ถูกให้ได้มากที่สุดภายใน 45 วินาที พร้อมหรือยัง?</p>
+      <button class="primary-btn" id="timeStartBtn">เริ่ม!</button>
+    </div>
+
+    <div id="timePlay" hidden>
+      <div class="timer-wrap">
+        <svg class="timer-ring" viewBox="0 0 64 64">
+          <circle class="track" cx="32" cy="32" r="26"></circle>
+          <circle class="fill" id="timerFill" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="0"></circle>
+        </svg>
+      </div>
+      <div class="round-stats" style="display:block;text-align:center;margin:0 auto 10px;width:fit-content;">คะแนน <span id="timeScore">0</span></div>
+      <div class="stage">
+        <div class="kana-tile" id="timeTile"><span class="glyph" id="timeChar"></span></div>
+      </div>
+      <div class="choices" id="timeChoices"></div>
+    </div>
+
+    <div id="timeResult" class="center-col" hidden>
+      <div class="result-box">
+        <div class="big-num" id="timeFinalScore">0</div>
+        <div>ตอบถูก</div>
+        <div class="best-line" id="timeBestNote"></div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="primary-btn" id="timeReplayBtn">เล่นอีกครั้ง</button>
+        <button class="ghost-btn" data-back>กลับเมนู</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var HIRAGANA = [
+    {c:"あ",r:"a",row:"a"},{c:"い",r:"i",row:"a"},{c:"う",r:"u",row:"a"},{c:"え",r:"e",row:"a"},{c:"お",r:"o",row:"a"},
+    {c:"か",r:"ka",row:"ka"},{c:"き",r:"ki",row:"ka"},{c:"く",r:"ku",row:"ka"},{c:"け",r:"ke",row:"ka"},{c:"こ",r:"ko",row:"ka"},
+    {c:"さ",r:"sa",row:"sa"},{c:"し",r:"shi",row:"sa",alt:["si"]},{c:"す",r:"su",row:"sa"},{c:"せ",r:"se",row:"sa"},{c:"そ",r:"so",row:"sa"},
+    {c:"た",r:"ta",row:"ta"},{c:"ち",r:"chi",row:"ta",alt:["ti"]},{c:"つ",r:"tsu",row:"ta",alt:["tu"]},{c:"て",r:"te",row:"ta"},{c:"と",r:"to",row:"ta"},
+    {c:"な",r:"na",row:"na"},{c:"に",r:"ni",row:"na"},{c:"ぬ",r:"nu",row:"na"},{c:"ね",r:"ne",row:"na"},{c:"の",r:"no",row:"na"},
+    {c:"は",r:"ha",row:"ha"},{c:"ひ",r:"hi",row:"ha"},{c:"ふ",r:"fu",row:"ha",alt:["hu"]},{c:"へ",r:"he",row:"ha"},{c:"ほ",r:"ho",row:"ha"},
+    {c:"ま",r:"ma",row:"ma"},{c:"み",r:"mi",row:"ma"},{c:"む",r:"mu",row:"ma"},{c:"め",r:"me",row:"ma"},{c:"も",r:"mo",row:"ma"},
+    {c:"や",r:"ya",row:"ya"},{c:"ゆ",r:"yu",row:"ya"},{c:"よ",r:"yo",row:"ya"},
+    {c:"ら",r:"ra",row:"ra"},{c:"り",r:"ri",row:"ra"},{c:"る",r:"ru",row:"ra"},{c:"れ",r:"re",row:"ra"},{c:"ろ",r:"ro",row:"ra"},
+    {c:"わ",r:"wa",row:"wa"},{c:"を",r:"wo",row:"wa"},{c:"ん",r:"n",row:"wa"},
+    {c:"が",r:"ga",row:"ga"},{c:"ぎ",r:"gi",row:"ga"},{c:"ぐ",r:"gu",row:"ga"},{c:"げ",r:"ge",row:"ga"},{c:"ご",r:"go",row:"ga"},
+    {c:"ざ",r:"za",row:"za"},{c:"じ",r:"ji",row:"za"},{c:"ず",r:"zu",row:"za"},{c:"ぜ",r:"ze",row:"za"},{c:"ぞ",r:"zo",row:"za"},
+    {c:"だ",r:"da",row:"da"},{c:"ぢ",r:"di",row:"da",alt:["ji"]},{c:"づ",r:"du",row:"da",alt:["zu"]},{c:"で",r:"de",row:"da"},{c:"ど",r:"do",row:"da"},
+    {c:"ば",r:"ba",row:"ba"},{c:"び",r:"bi",row:"ba"},{c:"ぶ",r:"bu",row:"ba"},{c:"べ",r:"be",row:"ba"},{c:"ぼ",r:"bo",row:"ba"},
+    {c:"ぱ",r:"pa",row:"pa"},{c:"ぴ",r:"pi",row:"pa"},{c:"ぷ",r:"pu",row:"pa"},{c:"ぺ",r:"pe",row:"pa"},{c:"ぽ",r:"po",row:"pa"}
+  ];
+
+  var ROWS = [
+    {id:"a",label:"a–o",glyph:"あ"},
+    {id:"ka",label:"ka–ko",glyph:"か"},
+    {id:"sa",label:"sa–so",glyph:"さ"},
+    {id:"ta",label:"ta–to",glyph:"た"},
+    {id:"na",label:"na–no",glyph:"な"},
+    {id:"ha",label:"ha–ho",glyph:"は"},
+    {id:"ma",label:"ma–mo",glyph:"ま"},
+    {id:"ya",label:"ya–yo",glyph:"や"},
+    {id:"ra",label:"ra–ro",glyph:"ら"},
+    {id:"wa",label:"wa,wo,n",glyph:"わ"},
+    {id:"ga",label:"ga–go",glyph:"が",extra:true},
+    {id:"za",label:"za–zo",glyph:"ざ",extra:true},
+    {id:"da",label:"da–do",glyph:"だ",extra:true},
+    {id:"ba",label:"ba–bo",glyph:"ば",extra:true},
+    {id:"pa",label:"pa–po",glyph:"ぱ",extra:true}
+  ];
+
+  var MIN_CHARS = 4;
+
+  var state = {
+    rows: new Set(ROWS.filter(function(r){ return !r.extra; }).map(function(r){ return r.id; })),
+    stars: loadNum("hqStars", 0),
+    bestTime: loadNum("hqBestTime", 0)
+  };
+
+  function loadNum(key, fallback){
+    try{
+      var v = localStorage.getItem(key);
+      return v === null ? fallback : parseInt(v, 10) || fallback;
+    }catch(e){ return fallback; }
+  }
+  function saveNum(key, val){
+    try{ localStorage.setItem(key, String(val)); }catch(e){}
+  }
+
+  function activeSet(){
+    return HIRAGANA.filter(function(h){ return state.rows.has(h.row); });
+  }
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for(var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var t=a[i]; a[i]=a[j]; a[j]=t;
+    }
+    return a;
+  }
+
+  function sampleExcluding(pool, n, excludeItems){
+    var filtered = pool.filter(function(p){ return excludeItems.indexOf(p) === -1; });
+    return shuffle(filtered).slice(0, n);
+  }
+
+  function pickRandom(pool, notEqualTo){
+    if(pool.length === 1) return pool[0];
+    var choice;
+    do{ choice = pool[Math.floor(Math.random()*pool.length)]; }
+    while(notEqualTo && choice === notEqualTo);
+    return choice;
+  }
+
+  function addStars(n, anchorEl){
+    state.stars += n;
+    saveNum("hqStars", state.stars);
+    document.getElementById("starCount").textContent = state.stars;
+    if(!window.matchMedia || !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+      var el = document.createElement("span");
+      el.className = "float-plus";
+      el.textContent = "+" + n;
+      (anchorEl || document.getElementById("starDisplay")).appendChild(el);
+      setTimeout(function(){ el.remove(); }, 850);
+    }
+  }
+
+  function stampSVG(correct){
+    var ns = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("class","stamp-svg show");
+    svg.setAttribute("viewBox","0 0 100 100");
+    if(correct){
+      var c = document.createElementNS(ns,"circle");
+      c.setAttribute("class","draw");
+      c.setAttribute("cx","50"); c.setAttribute("cy","50"); c.setAttribute("r","38");
+      c.setAttribute("fill","none"); c.setAttribute("stroke","var(--accent)");
+      c.setAttribute("stroke-width","9"); c.setAttribute("pathLength","100");
+      svg.appendChild(c);
+    }else{
+      [["26","26","74","74",""],["74","26","26","74"," draw2"]].forEach(function(pts){
+        var l = document.createElementNS(ns,"line");
+        l.setAttribute("class","draw"+pts[4]);
+        l.setAttribute("x1",pts[0]); l.setAttribute("y1",pts[1]);
+        l.setAttribute("x2",pts[2]); l.setAttribute("y2",pts[3]);
+        l.setAttribute("stroke","var(--accent)"); l.setAttribute("stroke-width","9");
+        l.setAttribute("stroke-linecap","round"); l.setAttribute("pathLength","100");
+        svg.appendChild(l);
+      });
+    }
+    return svg;
+  }
+
+  function showStamp(tileEl, correct){
+    var old = tileEl.querySelector(".stamp-svg");
+    if(old) old.remove();
+    tileEl.appendChild(stampSVG(correct));
+  }
+
+  /* ---------------- view switching ---------------- */
+  var views = document.querySelectorAll(".view");
+  function showView(id){
+    views.forEach(function(v){ v.hidden = (v.id !== id); });
+  }
+  document.querySelectorAll("[data-back]").forEach(function(btn){
+    btn.addEventListener("click", function(){ showView("view-hub"); });
+  });
+
+  /* ---------------- hub: row chips ---------------- */
+  var chipsBaseWrap = document.getElementById("rowChipsBase");
+  var chipsExtraWrap = document.getElementById("rowChipsExtra");
+  ROWS.forEach(function(row){
+    var chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "chip";
+    chip.setAttribute("aria-pressed", row.extra ? "false" : "true");
+    chip.innerHTML = '<span class="glyph">'+row.glyph+'</span><span>'+row.label+'</span>';
+    chip.addEventListener("click", function(){
+      var pressed = chip.getAttribute("aria-pressed") === "true";
+      if(pressed && state.rows.size === 1) return; // keep at least one row active
+      if(pressed){ state.rows.delete(row.id); chip.setAttribute("aria-pressed","false"); }
+      else{ state.rows.add(row.id); chip.setAttribute("aria-pressed","true"); }
+      refreshHub();
+    });
+    (row.extra ? chipsExtraWrap : chipsBaseWrap).appendChild(chip);
+  });
+
+  function refreshHub(){
+    var count = activeSet().length;
+    document.getElementById("activeCount").textContent = count;
+    document.querySelectorAll(".play-btn").forEach(function(btn){
+      btn.disabled = count < MIN_CHARS;
+    });
+  }
+
+  document.querySelectorAll(".play-btn").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var game = btn.getAttribute("data-game");
+      showView("view-"+game);
+      if(game === "guess") initGuess();
+      if(game === "next") initNext();
+      if(game === "match") initMatch();
+      if(game === "type") initType();
+      if(game === "time") initTime();
+    });
+  });
+
+  /* ================= GAME 1: GUESS ================= */
+  var guess = { score:0, total:0, streak:0, current:null, locked:false };
+  function initGuess(){
+    guess = { score:0, total:0, streak:0, current:null, locked:false };
+    updateGuessStats();
+    nextGuessRound();
+  }
+  function updateGuessStats(){
+    document.getElementById("guessScore").textContent = guess.score;
+    document.getElementById("guessTotal").textContent = guess.total;
+    document.getElementById("guessStreak").textContent = guess.streak;
+  }
+  function nextGuessRound(){
+    guess.locked = false;
+    var pool = activeSet();
+    guess.current = pickRandom(pool, guess.current);
+    document.getElementById("guessChar").textContent = guess.current.c;
+    var tile = document.getElementById("guessTile");
+    var old = tile.querySelector(".stamp-svg"); if(old) old.remove();
+    var distractors = sampleExcluding(pool, 3, [guess.current]);
+    var options = shuffle([guess.current].concat(distractors));
+    var wrap = document.getElementById("guessChoices");
+    wrap.innerHTML = "";
+    options.forEach(function(opt){
+      var b = document.createElement("button");
+      b.className = "choice-btn";
+      b.textContent = opt.r;
+      b.addEventListener("click", function(){ answerGuess(opt, b, wrap); });
+      wrap.appendChild(b);
+    });
+  }
+  function answerGuess(opt, btnEl, wrap){
+    if(guess.locked) return;
+    guess.locked = true;
+    guess.total++;
+    var correct = opt === guess.current;
+    if(correct){ guess.score++; guess.streak++; btnEl.classList.add("correct"); addStars(1); }
+    else{
+      guess.streak = 0; btnEl.classList.add("wrong");
+      wrap.querySelectorAll(".choice-btn").forEach(function(b){
+        if(b.textContent === guess.current.r) b.classList.add("correct");
+      });
+    }
+    wrap.querySelectorAll(".choice-btn").forEach(function(b){ b.disabled = true; });
+    showStamp(document.getElementById("guessTile"), correct);
+    updateGuessStats();
+    setTimeout(nextGuessRound, 850);
+  }
+
+  /* ================= GAME 2: NEXT ================= */
+  var nextGame = { score:0, total:0, streak:0, answer:null, locked:false };
+  function initNext(){
+    nextGame = { score:0, total:0, streak:0, answer:null, locked:false };
+    updateNextStats();
+    nextNextRound();
+  }
+  function updateNextStats(){
+    document.getElementById("nextScore").textContent = nextGame.score;
+    document.getElementById("nextTotal").textContent = nextGame.total;
+    document.getElementById("nextStreak").textContent = nextGame.streak;
+  }
+  function orderedActive(){
+    return HIRAGANA.filter(function(h){ return state.rows.has(h.row); });
+  }
+  function nextNextRound(){
+    nextGame.locked = false;
+    var seq = orderedActive();
+    var n = seq.length;
+    var start = Math.floor(Math.random()*n);
+    var shown = [seq[start%n], seq[(start+1)%n], seq[(start+2)%n]];
+    var answer = seq[(start+3)%n];
+    nextGame.answer = answer;
+
+    var seqWrap = document.getElementById("nextSequence");
+    seqWrap.innerHTML = "";
+    shown.forEach(function(item){
+      var t = document.createElement("div");
+      t.className = "kana-tile small";
+      t.innerHTML = '<span class="glyph">'+item.c+'</span>';
+      seqWrap.appendChild(t);
+      var arrow = document.createElement("span");
+      arrow.className = "seq-arrow"; arrow.textContent = "→";
+      seqWrap.appendChild(arrow);
+    });
+    var qTile = document.createElement("div");
+    qTile.className = "kana-tile small q";
+    qTile.id = "nextQTile";
+    qTile.innerHTML = '<span class="glyph">?</span>';
+    seqWrap.appendChild(qTile);
+
+    var distractors = sampleExcluding(seq, 3, shown.concat([answer]));
+    while(distractors.length < 3){
+      var extra = pickRandom(seq);
+      if(shown.indexOf(extra) === -1 && extra !== answer && distractors.indexOf(extra) === -1) distractors.push(extra);
+    }
+    var options = shuffle([answer].concat(distractors));
+    var wrap = document.getElementById("nextChoices");
+    wrap.innerHTML = "";
+    options.forEach(function(opt){
+      var b = document.createElement("button");
+      b.className = "choice-btn kanaopt";
+      b.textContent = opt.c;
+      b.addEventListener("click", function(){ answerNext(opt, b, wrap); });
+      wrap.appendChild(b);
+    });
+  }
+  function answerNext(opt, btnEl, wrap){
+    if(nextGame.locked) return;
+    nextGame.locked = true;
+    nextGame.total++;
+    var correct = opt === nextGame.answer;
+    if(correct){ nextGame.score++; nextGame.streak++; btnEl.classList.add("correct"); addStars(1); }
+    else{
+      nextGame.streak = 0; btnEl.classList.add("wrong");
+      wrap.querySelectorAll(".choice-btn").forEach(function(b){
+        if(b.textContent === nextGame.answer.c) b.classList.add("correct");
+      });
+    }
+    wrap.querySelectorAll(".choice-btn").forEach(function(b){ b.disabled = true; });
+    var qTile = document.getElementById("nextQTile");
+    if(qTile){ qTile.querySelector(".glyph").textContent = nextGame.answer.c; showStamp(qTile, correct); }
+    updateNextStats();
+    setTimeout(nextNextRound, 950);
+  }
+
+  /* ================= GAME 3: MATCH ================= */
+  var match = { flipped:[], matchedCount:0, moves:0, locked:false };
+  function initMatch(){
+    var pool = activeSet();
+    var pairCount = Math.min(6, pool.length);
+    var chosen = shuffle(pool).slice(0, pairCount);
+    var cards = [];
+    chosen.forEach(function(entry, idx){
+      cards.push({ entryIdx: idx, type:"kana", entry: entry });
+      cards.push({ entryIdx: idx, type:"romaji", entry: entry });
+    });
+    cards = shuffle(cards);
+    match = { flipped:[], matchedCount:0, moves:0, locked:false, pairCount: pairCount };
+    document.getElementById("matchPairs").textContent = pairCount;
+    document.getElementById("matchFound").textContent = 0;
+    document.getElementById("matchMoves").textContent = 0;
+
+    var grid = document.getElementById("matchGrid");
+    grid.innerHTML = "";
+    cards.forEach(function(card, i){
+      var el = document.createElement("button");
+      el.type = "button";
+      el.className = "match-card";
+      el.setAttribute("data-idx", i);
+      var frontText = card.type === "kana" ? card.entry.c : card.entry.r;
+      el.innerHTML =
+        '<div class="face back"></div>' +
+        '<div class="face front '+card.type+'">'+frontText+'</div>';
+      el.addEventListener("click", function(){ flipMatchCard(el, card, i, cards); });
+      grid.appendChild(el);
+    });
+  }
+  function flipMatchCard(el, card, i, cards){
+    if(match.locked) return;
+    if(el.classList.contains("flipped") || el.classList.contains("matched")) return;
+    el.classList.add("flipped");
+    match.flipped.push({el:el, card:card});
+    if(match.flipped.length === 2){
+      match.locked = true;
+      match.moves++;
+      document.getElementById("matchMoves").textContent = match.moves;
+      var a = match.flipped[0], b = match.flipped[1];
+      var isMatch = a.card.entryIdx === b.card.entryIdx && a.card.type !== b.card.type;
+      setTimeout(function(){
+        if(isMatch){
+          a.el.classList.add("matched"); b.el.classList.add("matched");
+          match.matchedCount++;
+          document.getElementById("matchFound").textContent = match.matchedCount;
+          addStars(1);
+          if(match.matchedCount === match.pairCount){
+            setTimeout(function(){
+              var grid = document.getElementById("matchGrid");
+              var done = document.createElement("p");
+              done.style.textAlign = "center";
+              done.style.fontFamily = "'Fredoka',sans-serif";
+              done.style.fontWeight = "600";
+              done.style.color = "var(--good)";
+              done.style.gridColumn = "1/-1";
+              done.textContent = "เก่งมาก! จับคู่ครบแล้ว 🎉";
+              grid.appendChild(done);
+            }, 200);
+          }
+        }else{
+          a.el.classList.remove("flipped"); b.el.classList.remove("flipped");
+        }
+        match.flipped = [];
+        match.locked = false;
+      }, 700);
+    }
+  }
+
+  /* ================= GAME 4: TYPE ================= */
+  var typeGame = { score:0, total:0, streak:0, current:null, locked:false };
+  function initType(){
+    typeGame = { score:0, total:0, streak:0, current:null, locked:false };
+    updateTypeStats();
+    document.getElementById("typeFeedback").textContent = "";
+    document.getElementById("typeFeedback").className = "feedback-line";
+    nextTypeRound();
+  }
+  function updateTypeStats(){
+    document.getElementById("typeScore").textContent = typeGame.score;
+    document.getElementById("typeTotal").textContent = typeGame.total;
+    document.getElementById("typeStreak").textContent = typeGame.streak;
+  }
+  function nextTypeRound(){
+    typeGame.locked = false;
+    var pool = activeSet();
+    typeGame.current = pickRandom(pool, typeGame.current);
+    document.getElementById("typeChar").textContent = typeGame.current.c;
+    var tile = document.getElementById("typeTile");
+    var old = tile.querySelector(".stamp-svg"); if(old) old.remove();
+    var input = document.getElementById("typeInput");
+    input.value = "";
+    input.classList.remove("shake");
+    input.focus();
+    var fb = document.getElementById("typeFeedback");
+    fb.textContent = "";
+    fb.className = "feedback-line";
+  }
+  document.getElementById("typeForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    if(typeGame.locked) return;
+    var input = document.getElementById("typeInput");
+    var val = input.value.trim().toLowerCase();
+    if(!val) return;
+    typeGame.locked = true;
+    typeGame.total++;
+    var acceptable = [typeGame.current.r].concat(typeGame.current.alt || []);
+    var correct = acceptable.indexOf(val) !== -1;
+    var fb = document.getElementById("typeFeedback");
+    if(correct){
+      typeGame.score++; typeGame.streak++;
+      fb.textContent = "ถูกต้อง! (" + typeGame.current.r + ")";
+      fb.className = "feedback-line good";
+      addStars(1);
+    }else{
+      typeGame.streak = 0;
+      input.classList.add("shake");
+      fb.textContent = "คำตอบคือ \"" + typeGame.current.r + "\"";
+      fb.className = "feedback-line bad";
+    }
+    showStamp(document.getElementById("typeTile"), correct);
+    updateTypeStats();
+    setTimeout(nextTypeRound, 950);
+  });
+
+  /* ================= GAME 5: TIME ATTACK ================= */
+  var timeGame = { score:0, timer:null, remaining:45, current:null, locked:false, running:false };
+  var TIME_TOTAL = 45;
+  var RING_CIRC = 163.4;
+
+  function initTime(){
+    document.getElementById("timeStart").hidden = false;
+    document.getElementById("timePlay").hidden = true;
+    document.getElementById("timeResult").hidden = true;
+    document.getElementById("timeBestLine").textContent = "สถิติ " + state.bestTime;
+  }
+  document.getElementById("timeStartBtn").addEventListener("click", startTimeAttack);
+  document.getElementById("timeReplayBtn").addEventListener("click", startTimeAttack);
+
+  function startTimeAttack(){
+    var pool = activeSet();
+    if(pool.length < MIN_CHARS) return;
+    timeGame = { score:0, timer:null, remaining:TIME_TOTAL, current:null, locked:false, running:true };
+    document.getElementById("timeStart").hidden = true;
+    document.getElementById("timeResult").hidden = true;
+    document.getElementById("timePlay").hidden = false;
+    document.getElementById("timeScore").textContent = 0;
+    updateTimerRing();
+    nextTimeRound();
+    timeGame.timer = setInterval(function(){
+      timeGame.remaining--;
+      updateTimerRing();
+      if(timeGame.remaining <= 0){ endTimeAttack(); }
+    }, 1000);
+  }
+  function updateTimerRing(){
+    var fill = document.getElementById("timerFill");
+    var frac = Math.max(0, timeGame.remaining / TIME_TOTAL);
+    fill.setAttribute("stroke-dasharray", RING_CIRC);
+    fill.setAttribute("stroke-dashoffset", RING_CIRC * (1 - frac));
+  }
+  function nextTimeRound(){
+    if(!timeGame.running) return;
+    timeGame.locked = false;
+    var pool = activeSet();
+    timeGame.current = pickRandom(pool, timeGame.current);
+    document.getElementById("timeChar").textContent = timeGame.current.c;
+    var tile = document.getElementById("timeTile");
+    var old = tile.querySelector(".stamp-svg"); if(old) old.remove();
+    var distractors = sampleExcluding(pool, 3, [timeGame.current]);
+    var options = shuffle([timeGame.current].concat(distractors));
+    var wrap = document.getElementById("timeChoices");
+    wrap.innerHTML = "";
+    options.forEach(function(opt){
+      var b = document.createElement("button");
+      b.className = "choice-btn";
+      b.textContent = opt.r;
+      b.addEventListener("click", function(){ answerTime(opt, b, wrap); });
+      wrap.appendChild(b);
+    });
+  }
+  function answerTime(opt, btnEl, wrap){
+    if(timeGame.locked || !timeGame.running) return;
+    timeGame.locked = true;
+    var correct = opt === timeGame.current;
+    if(correct){ timeGame.score++; btnEl.classList.add("correct"); }
+    else{
+      btnEl.classList.add("wrong");
+      wrap.querySelectorAll(".choice-btn").forEach(function(b){
+        if(b.textContent === timeGame.current.r) b.classList.add("correct");
+      });
+    }
+    wrap.querySelectorAll(".choice-btn").forEach(function(b){ b.disabled = true; });
+    showStamp(document.getElementById("timeTile"), correct);
+    document.getElementById("timeScore").textContent = timeGame.score;
+    setTimeout(nextTimeRound, 480);
+  }
+  function endTimeAttack(){
+    timeGame.running = false;
+    clearInterval(timeGame.timer);
+    document.getElementById("timePlay").hidden = true;
+    document.getElementById("timeResult").hidden = false;
+    document.getElementById("timeFinalScore").textContent = timeGame.score;
+    var beat = timeGame.score > state.bestTime;
+    if(beat){ state.bestTime = timeGame.score; saveNum("hqBestTime", state.bestTime); }
+    document.getElementById("timeBestNote").textContent = beat ? "สถิติใหม่! 🎉" : ("สถิติสูงสุด " + state.bestTime);
+    addStars(Math.max(1, Math.round(timeGame.score/3)));
+  }
+
+  /* ---------------- init ---------------- */
+  document.getElementById("starCount").textContent = state.stars;
+  refreshHub();
+})();
+</script>
+
+</body>
+</html>
