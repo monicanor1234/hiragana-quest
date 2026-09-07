@@ -141,6 +141,24 @@
   .rows-count{ margin-top:12px; font-size:.82rem; color:var(--ink-soft); }
   .rows-count strong{ color:var(--ink); }
 
+  /* ---------- script toggle ---------- */
+  .script-select{ display:flex; justify-content:center; margin-bottom:16px; }
+  .script-toggle{
+    display:inline-flex; gap:6px; background:var(--surface); border:2px solid var(--line);
+    border-radius:16px; padding:6px; box-shadow:0 4px 0 var(--shadow-line);
+  }
+  .script-btn{
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+    background:transparent; border:2px solid transparent; border-radius:12px;
+    padding:8px 22px; cursor:pointer; color:var(--ink-soft);
+    font-family:'Kosugi Maru',sans-serif; font-size:1.15rem;
+  }
+  .script-btn .script-sub{ font-family:'Mitr',sans-serif; font-size:.68rem; font-weight:500; }
+  .script-btn[aria-pressed="true"]{
+    background:var(--accent); border-color:var(--accent); color:var(--accent-ink);
+  }
+  .script-btn:active{ transform:scale(.97); }
+
   .games-grid{
     display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr));
     gap:16px; margin-top:18px;
@@ -290,8 +308,7 @@
     *{ animation-duration:.001s !important; transition-duration:.001s !important; }
   }
 </style>
-</head>
-<body>
+
 <div class="app">
   <header class="topbar">
     <div class="brand">
@@ -309,6 +326,13 @@
 
   <!-- ===================== HUB ===================== -->
   <main id="view-hub" class="view">
+    <section class="script-select">
+      <div class="script-toggle" id="scriptToggle" role="group" aria-label="เลือกชุดตัวอักษร">
+        <button type="button" class="script-btn" data-script="hiragana" aria-pressed="true">ひらがな<span class="script-sub">ฮิรางานะ</span></button>
+        <button type="button" class="script-btn" data-script="katakana" aria-pressed="false">カタカナ<span class="script-sub">คาตากานะ</span></button>
+      </div>
+    </section>
+
     <section class="rows-select">
       <h2>เลือกวรรคที่จะฝึก</h2>
       <p class="hint">แตะเพื่อเลือก/ยกเลิกวรรค ใช้ได้กับทุกเกม</p>
@@ -491,31 +515,64 @@
     {c:"ぱ",r:"pa",row:"pa"},{c:"ぴ",r:"pi",row:"pa"},{c:"ぷ",r:"pu",row:"pa"},{c:"ぺ",r:"pe",row:"pa"},{c:"ぽ",r:"po",row:"pa"}
   ];
 
+  var KATAKANA = [
+    {c:"ア",r:"a",row:"a"},{c:"イ",r:"i",row:"a"},{c:"ウ",r:"u",row:"a"},{c:"エ",r:"e",row:"a"},{c:"オ",r:"o",row:"a"},
+    {c:"カ",r:"ka",row:"ka"},{c:"キ",r:"ki",row:"ka"},{c:"ク",r:"ku",row:"ka"},{c:"ケ",r:"ke",row:"ka"},{c:"コ",r:"ko",row:"ka"},
+    {c:"サ",r:"sa",row:"sa"},{c:"シ",r:"shi",row:"sa",alt:["si"]},{c:"ス",r:"su",row:"sa"},{c:"セ",r:"se",row:"sa"},{c:"ソ",r:"so",row:"sa"},
+    {c:"タ",r:"ta",row:"ta"},{c:"チ",r:"chi",row:"ta",alt:["ti"]},{c:"ツ",r:"tsu",row:"ta",alt:["tu"]},{c:"テ",r:"te",row:"ta"},{c:"ト",r:"to",row:"ta"},
+    {c:"ナ",r:"na",row:"na"},{c:"ニ",r:"ni",row:"na"},{c:"ヌ",r:"nu",row:"na"},{c:"ネ",r:"ne",row:"na"},{c:"ノ",r:"no",row:"na"},
+    {c:"ハ",r:"ha",row:"ha"},{c:"ヒ",r:"hi",row:"ha"},{c:"フ",r:"fu",row:"ha",alt:["hu"]},{c:"ヘ",r:"he",row:"ha"},{c:"ホ",r:"ho",row:"ha"},
+    {c:"マ",r:"ma",row:"ma"},{c:"ミ",r:"mi",row:"ma"},{c:"ム",r:"mu",row:"ma"},{c:"メ",r:"me",row:"ma"},{c:"モ",r:"mo",row:"ma"},
+    {c:"ヤ",r:"ya",row:"ya"},{c:"ユ",r:"yu",row:"ya"},{c:"ヨ",r:"yo",row:"ya"},
+    {c:"ラ",r:"ra",row:"ra"},{c:"リ",r:"ri",row:"ra"},{c:"ル",r:"ru",row:"ra"},{c:"レ",r:"re",row:"ra"},{c:"ロ",r:"ro",row:"ra"},
+    {c:"ワ",r:"wa",row:"wa"},{c:"ヲ",r:"wo",row:"wa"},{c:"ン",r:"n",row:"wa"},
+    {c:"ガ",r:"ga",row:"ga"},{c:"ギ",r:"gi",row:"ga"},{c:"グ",r:"gu",row:"ga"},{c:"ゲ",r:"ge",row:"ga"},{c:"ゴ",r:"go",row:"ga"},
+    {c:"ザ",r:"za",row:"za"},{c:"ジ",r:"ji",row:"za"},{c:"ズ",r:"zu",row:"za"},{c:"ゼ",r:"ze",row:"za"},{c:"ゾ",r:"zo",row:"za"},
+    {c:"ダ",r:"da",row:"da"},{c:"ヂ",r:"di",row:"da",alt:["ji"]},{c:"ヅ",r:"du",row:"da",alt:["zu"]},{c:"デ",r:"de",row:"da"},{c:"ド",r:"do",row:"da"},
+    {c:"バ",r:"ba",row:"ba"},{c:"ビ",r:"bi",row:"ba"},{c:"ブ",r:"bu",row:"ba"},{c:"ベ",r:"be",row:"ba"},{c:"ボ",r:"bo",row:"ba"},
+    {c:"パ",r:"pa",row:"pa"},{c:"ピ",r:"pi",row:"pa"},{c:"プ",r:"pu",row:"pa"},{c:"ペ",r:"pe",row:"pa"},{c:"ポ",r:"po",row:"pa"}
+  ];
+
+  var CHARSETS = { hiragana: HIRAGANA, katakana: KATAKANA };
+  var SCRIPT_LABEL = { hiragana: "ฮิรางานะ", katakana: "คาตากานะ" };
+  var SCRIPT_MARK = { hiragana: "あ", katakana: "ア" };
+
   var ROWS = [
-    {id:"a",label:"a–o",glyph:"あ"},
-    {id:"ka",label:"ka–ko",glyph:"か"},
-    {id:"sa",label:"sa–so",glyph:"さ"},
-    {id:"ta",label:"ta–to",glyph:"た"},
-    {id:"na",label:"na–no",glyph:"な"},
-    {id:"ha",label:"ha–ho",glyph:"は"},
-    {id:"ma",label:"ma–mo",glyph:"ま"},
-    {id:"ya",label:"ya–yo",glyph:"や"},
-    {id:"ra",label:"ra–ro",glyph:"ら"},
-    {id:"wa",label:"wa,wo,n",glyph:"わ"},
-    {id:"ga",label:"ga–go",glyph:"が",extra:true},
-    {id:"za",label:"za–zo",glyph:"ざ",extra:true},
-    {id:"da",label:"da–do",glyph:"だ",extra:true},
-    {id:"ba",label:"ba–bo",glyph:"ば",extra:true},
-    {id:"pa",label:"pa–po",glyph:"ぱ",extra:true}
+    {id:"a",label:"a–o"},
+    {id:"ka",label:"ka–ko"},
+    {id:"sa",label:"sa–so"},
+    {id:"ta",label:"ta–to"},
+    {id:"na",label:"na–no"},
+    {id:"ha",label:"ha–ho"},
+    {id:"ma",label:"ma–mo"},
+    {id:"ya",label:"ya–yo"},
+    {id:"ra",label:"ra–ro"},
+    {id:"wa",label:"wa,wo,n"},
+    {id:"ga",label:"ga–go",extra:true},
+    {id:"za",label:"za–zo",extra:true},
+    {id:"da",label:"da–do",extra:true},
+    {id:"ba",label:"ba–bo",extra:true},
+    {id:"pa",label:"pa–po",extra:true}
   ];
 
   var MIN_CHARS = 4;
 
   var state = {
-    rows: new Set(ROWS.filter(function(r){ return !r.extra; }).map(function(r){ return r.id; })),
+    script: "hiragana",
+    rows: new Set(ROWS.map(function(r){ return r.id; })),
     stars: loadNum("hqStars", 0),
     bestTime: loadNum("hqBestTime", 0)
   };
+
+  function currentSet(){
+    return CHARSETS[state.script];
+  }
+
+  function representativeGlyph(rowId){
+    var set = currentSet();
+    for(var i=0;i<set.length;i++){ if(set[i].row === rowId) return set[i].c; }
+    return "?";
+  }
 
   function loadNum(key, fallback){
     try{
@@ -528,7 +585,7 @@
   }
 
   function activeSet(){
-    return HIRAGANA.filter(function(h){ return state.rows.has(h.row); });
+    return currentSet().filter(function(h){ return state.rows.has(h.row); });
   }
 
   function shuffle(arr){
@@ -610,21 +667,27 @@
   /* ---------------- hub: row chips ---------------- */
   var chipsBaseWrap = document.getElementById("rowChipsBase");
   var chipsExtraWrap = document.getElementById("rowChipsExtra");
-  ROWS.forEach(function(row){
-    var chip = document.createElement("button");
-    chip.type = "button";
-    chip.className = "chip";
-    chip.setAttribute("aria-pressed", row.extra ? "false" : "true");
-    chip.innerHTML = '<span class="glyph">'+row.glyph+'</span><span>'+row.label+'</span>';
-    chip.addEventListener("click", function(){
-      var pressed = chip.getAttribute("aria-pressed") === "true";
-      if(pressed && state.rows.size === 1) return; // keep at least one row active
-      if(pressed){ state.rows.delete(row.id); chip.setAttribute("aria-pressed","false"); }
-      else{ state.rows.add(row.id); chip.setAttribute("aria-pressed","true"); }
-      refreshHub();
+
+  function buildRowChips(){
+    chipsBaseWrap.innerHTML = "";
+    chipsExtraWrap.innerHTML = "";
+    ROWS.forEach(function(row){
+      var chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip";
+      chip.setAttribute("aria-pressed", state.rows.has(row.id) ? "true" : "false");
+      chip.innerHTML = '<span class="glyph">'+representativeGlyph(row.id)+'</span><span>'+row.label+'</span>';
+      chip.addEventListener("click", function(){
+        var pressed = chip.getAttribute("aria-pressed") === "true";
+        if(pressed && state.rows.size === 1) return; // keep at least one row active
+        if(pressed){ state.rows.delete(row.id); chip.setAttribute("aria-pressed","false"); }
+        else{ state.rows.add(row.id); chip.setAttribute("aria-pressed","true"); }
+        refreshHub();
+      });
+      (row.extra ? chipsExtraWrap : chipsBaseWrap).appendChild(chip);
     });
-    (row.extra ? chipsExtraWrap : chipsBaseWrap).appendChild(chip);
-  });
+  }
+  buildRowChips();
 
   function refreshHub(){
     var count = activeSet().length;
@@ -633,6 +696,23 @@
       btn.disabled = count < MIN_CHARS;
     });
   }
+
+  /* ---------------- hub: script toggle ---------------- */
+  var scriptButtons = document.querySelectorAll(".script-btn");
+  function setScript(script){
+    if(state.script === script) return;
+    state.script = script;
+    scriptButtons.forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-script") === script ? "true" : "false");
+    });
+    document.querySelector(".brand-mark").textContent = SCRIPT_MARK[script];
+    document.querySelector(".brand-text span").textContent = "เล่นสนุก ฝึกจำตัวอักษร" + SCRIPT_LABEL[script];
+    buildRowChips();
+    refreshHub();
+  }
+  scriptButtons.forEach(function(b){
+    b.addEventListener("click", function(){ setScript(b.getAttribute("data-script")); });
+  });
 
   document.querySelectorAll(".play-btn").forEach(function(btn){
     btn.addEventListener("click", function(){
@@ -708,7 +788,7 @@
     document.getElementById("nextStreak").textContent = nextGame.streak;
   }
   function orderedActive(){
-    return HIRAGANA.filter(function(h){ return state.rows.has(h.row); });
+    return currentSet().filter(function(h){ return state.rows.has(h.row); });
   }
   function nextNextRound(){
     nextGame.locked = false;
